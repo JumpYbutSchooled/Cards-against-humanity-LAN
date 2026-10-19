@@ -145,7 +145,7 @@ class App:
         self.library = Library(os.path.join(ROOT, "assets", "cards"))
         if not self.settings.get("packs"):
             self.settings["packs"] = self.library.default_selection()
-        self.settings["packs"] = [p for p in self.settings["packs"] if p in self.library.by_id] or \
+        self.settings["packs"] = self.library.migrate_ids(self.settings["packs"]) or \
             self.library.default_selection()
         self.sounds = Sounds(self.settings.get("volume", 0.6))
         self.restart_requested = False

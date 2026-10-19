@@ -63,10 +63,14 @@ def family_of(name):
     return fam or name
 
 
-def safe_filename(name):
+def safe_filename(name, limit=48):
+    """Short, Windows-safe names: Windows breaks on paths over 260 characters, and players often
+    unzip into deep folders like Downloads\\Repo-main\\Repo-main\\."""
     name = re.sub(r'[<>:"/\\|?*]', "", name)
     name = re.sub(r"\s+", " ", name).strip(" .")
-    return name[:90]
+    if len(name) > limit:
+        name = name[:limit].rsplit(" ", 1)[0].rstrip(" .,-(")
+    return name
 
 
 def clean(text):

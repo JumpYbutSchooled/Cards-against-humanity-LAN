@@ -47,6 +47,25 @@ class Library:
                 return p
         return None
 
+    def migrate_ids(self, ids):
+        """Maps saved pack ids from older versions (long file names got shortened) onto current ones."""
+        out = []
+        for pid in ids:
+            if pid in self.by_id:
+                out.append(pid)
+                continue
+            folder, _, base = pid.rpartition("/")
+            base = base[:-5] if base.endswith(".json") else base
+            best = None
+            for p in self.packs:
+                pf, _, pb = p["id"].rpartition("/")
+                pb = pb[:-5]
+                if pf == folder and base.startswith(pb) and (best is None or len(pb) > len(best[1])):
+                    best = (p["id"], pb)
+            if best and best[0] not in out:
+                out.append(best[0])
+        return out
+
     def default_selection(self):
         base = self.find("CAH Base Set")
         return [base["id"]] if base else [self.packs[0]["id"]]
