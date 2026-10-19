@@ -31,7 +31,10 @@ class MenuScene(Scene):
         self.sound = Button((40, 664, 150, 36), "", self.toggle_sound, "ghost", 14)
         self.update_btn = Button((470, 660, 330, 42), "", app.restart, "accent", 15)
         self.update_btn.visible = False
-        self.all = self.buttons(self.play, self.lan, self.packs, self.quit, self.sound, self.update_btn)
+        self.retry_btn = Button((0, 667, 80, 30), "Retry", lambda: app.updater and app.updater.start(), "ghost", 13)
+        self.retry_btn.visible = False
+        self.all = self.buttons(self.play, self.lan, self.packs, self.quit, self.sound, self.update_btn,
+                                self.retry_btn)
         black, white = deck_for(app)
         self.black_pool = [c for c in black if c.pick == 1] or black
         self.white_pool = white
@@ -76,12 +79,15 @@ class MenuScene(Scene):
         elif up.state == "dev":
             text, col = f"v{up.remote} is on GitHub (you have v{v}) - git pull to update", ACCENT
         elif up.state == "error":
-            text, col = "Update failed - will retry next launch", ui.RED
+            text, col = f"v{v} · update failed (details in update.log)", ui.RED
         elif up.state == "ready":
             return  # the restart button shows instead
         else:
-            text, col = f"v{v} · offline", DIM
+            text, col = f"v{v} · couldn't check for updates", DIM
         ui.draw_text(surf, text, 13, col, (330, 682), "midleft", bold=False)
+        self.retry_btn.visible = up is not None and up.state in ("offline", "error")
+        if self.retry_btn.visible:
+            self.retry_btn.rect.x = 330 + ui.text_width(text, 13, False) + 12
 
     def toggle_sound(self):
         s = self.app.sounds

@@ -8,7 +8,7 @@ A pygame version of Cards Against Humanity. It has 205 packs (base game, every e
 2. Get the game: green **Code** button → **Download ZIP**, then unzip it anywhere.
 3. Double-click **`Play.bat`**. The first run installs pygame automatically.
 
-**Updates are automatic.** On launch the game checks GitHub and downloads any new version in the background. The main menu then shows **"Update ready – restart now"**. If you don't click it, the update installs the next time you start the game.
+**Updates are automatic.** Every launch checks GitHub first and installs anything new before the game opens, so everyone ends up on the same version. If GitHub is blocked, it tries a mirror through our relay. If an update ever fails, the reason is in `update.log` in the game folder. A git clone updates itself with `git pull` when it has no local changes.
 
 ## Multiplayer
 
@@ -30,7 +30,18 @@ Keys: Esc opens the menu, Enter or Space confirms, 1–9 pick cards, F11 toggles
 
 ## Card packs
 
-**Card Packs** is a checklist. Tick any mix of packs, or tick a group's checkbox to select the whole group. Click a group's arrow or name to expand or collapse it. Ctrl+F searches.
+**Card Packs** has presets down the left:
+- **Classic**: the base game and main expansions.
+- **Party**: everything except family packs and conversion kits.
+- **18+ Filthy**: Classic plus the dirtiest packs.
+- **Family**: clean packs only.
+- **All Official**, **Everything**, and **Base Game**.
+
+You can also tick any mix of packs yourself and save it as your own preset. Click a group's arrow or name to expand it, or its checkbox to select the whole group. Ctrl+F searches. The same preset buttons are in the host lobby and the local setup screen.
+
+**Browse cards** (or **View** on any pack) opens the card browser. It lets you scroll through every black and white card, search them, and build combos: click a black card, then white cards to fill in the blanks. Press R for a random combo.
+
+While judging, everyone sees the card the Czar is reading at the same moment, so it can be read out loud together.
 
 `assets/cards/` holds one JSON file per pack, sorted by group (`Official/Base Game/CAH Base Set.json`, `Third-Party/Crabs Adjust Humidity/...`), plus an `index.json`.
 `python tools/build_cards.py` rebuilds the folder from the latest card database.

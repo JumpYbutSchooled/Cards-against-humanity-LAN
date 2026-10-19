@@ -13,12 +13,28 @@
 import { DurableObject } from "cloudflare:workers";
 
 const OPEN = 1;
+const REPO = "JumpYbutSchooled/Cards-against-humanity-LAN";
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === "/" || url.pathname === "/health") {
       return new Response("cah-relay ok", { headers: { "content-type": "text/plain" } });
+    }
+    // Update mirror: if a school filter blocks GitHub's download hosts, the game's updater
+    // can still fetch the newest version through here (we already know this host gets through).
+    if (url.pathname === "/update/VERSION" || url.pathname === "/update/zip") {
+      const zip = url.pathname.endsWith("zip");
+      const upstream = zip
+        ? `https://codeload.github.com/${REPO}/zip/refs/heads/main`
+        : `https://api.github.com/repos/${REPO}/contents/VERSION?ref=main`;
+      const r = await fetch(upstream, {
+        headers: { "User-Agent": "cah-relay-mirror", Accept: zip ? "*/*" : "application/vnd.github.raw" },
+      });
+      if (!r.ok) return new Response(`upstream ${r.status}`, { status: 502 });
+      return new Response(r.body, {
+        headers: { "content-type": zip ? "application/zip" : "text/plain", "cache-control": "no-store" },
+      });
     }
     const m = url.pathname.match(/^\/room\/([A-Za-z0-9]{4,8})$/);
     if (!m) return new Response("not found", { status: 404 });

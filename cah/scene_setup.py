@@ -18,13 +18,15 @@ class SetupScene(Scene):
         super().__init__(app)
         st = app.settings
         self.players = [dict(p) for p in st.get("players", [])][:MAX_PLAYERS]
-        self.points = Stepper((800, 170, 410, 54), "Points to win", st.get("points", 7), 1, 25,
+        self.points = Stepper((800, 158, 410, 50), "Points to win", st.get("points", 7), 1, 25,
                               on_change=lambda v: st.__setitem__("points", v), sounds=app.sounds)
-        self.hand = Stepper((800, 236, 410, 54), "Cards in hand", st.get("hand", 10), 5, 15,
+        self.hand = Stepper((800, 214, 410, 50), "Cards in hand", st.get("hand", 10), 5, 15,
                             on_change=lambda v: st.__setitem__("hand", v), sounds=app.sounds)
         self.add_human = Button((440, 112, 130, 38), "+ Player", lambda: self.add(False), "secondary", 15)
         self.add_bot = Button((580, 112, 130, 38), "+ Bot", lambda: self.add(True), "secondary", 15)
-        self.packs_btn = Button((800, 400, 410, 54), "Choose Packs", self.on_packs, "secondary", 18)
+        self.packs_btn = Button((800, 432, 410, 46), "Customize packs...", self.on_packs, "secondary", 16)
+        from .scene_packs import PresetChips
+        self.chips = PresetChips(app, 800, 318, 410, self.on_preset)
         self.back = Button((40, 654, 160, 50), "Back", self.on_back, "ghost", 18)
         self.start = Button((1010, 654, 230, 50), "Start Game", self.on_start, "accent", 20)
         self.fixed = self.buttons(self.add_human, self.add_bot, self.packs_btn, self.back, self.start)
@@ -102,6 +104,10 @@ class SetupScene(Scene):
             return "Each player needs a different name."
         return None
 
+    def on_preset(self, packs, name):
+        self.app.settings["packs"] = packs
+        self.app.save()
+
     def on_packs(self):
         self.save()
         from .scene_packs import PacksScene
@@ -126,7 +132,7 @@ class SetupScene(Scene):
         for p, inp, seg, rm in list(self.rows):
             if seg.handle(ev) or rm.handle(ev):
                 return
-        for w in self.fixed + [self.points, self.hand]:
+        for w in self.fixed + [self.points, self.hand, self.chips]:
             if w.handle(ev):
                 return
         if ev.type == pygame.KEYDOWN and not any(r[1].focused for r in self.rows):
@@ -141,6 +147,9 @@ class SetupScene(Scene):
         self.start.enabled = self.problems() is None
         for w in self.fixed + [self.points, self.hand]:
             w.update(dt)
+        from .presets import match_name
+        self.preset = match_name(self.app.library, self.app.settings["packs"], self.app.settings)
+        self.chips.update(dt, self.preset)
         for p, inp, seg, rm in self.rows:
             inp.update(dt)
             seg.update(dt)
@@ -173,19 +182,20 @@ class SetupScene(Scene):
         ui.draw_text(surf, "Rules", 22, WHITE, (800, 131), "midleft")
         self.points.draw(surf)
         self.hand.draw(surf)
-        ui.draw_text(surf, "Cards", 22, WHITE, (800, 340), "midleft")
+        ui.draw_text(surf, "Card packs", 22, WHITE, (800, 296), "midleft")
         lib = self.app.library
         b, w = lib.counts(self.app.settings["packs"])
         n = len(self.app.settings["packs"])
-        ui.draw_text(surf, f"{n} pack{'s' if n != 1 else ''}  ·  {b:,} black  ·  {w:,} white", 15, GRAY,
-                     (800, 370), "midleft", bold=False)
+        self.chips.draw(surf)
+        label = getattr(self, "preset", None) or "Custom mix"
+        ui.draw_text(surf, f"{label}:  {n} pack{'s' if n != 1 else ''}  ·  {b:,} black  ·  {w:,} white", 14, GRAY,
+                     (800, 412), "midleft", bold=False)
         self.packs_btn.draw(surf)
-        tips = ["Pass-and-play: humans take turns at this screen,",
-                "and a cover screen hides each hand until you're ready.",
-                "Bots play and judge on their own.",
-                "Pick 3 cards? Everyone draws 2 extra first."]
+        tips = ["Pass-and-play: humans take turns at this screen, and a",
+                "cover screen hides each hand until you're ready.",
+                "Bots play and judge on their own."]
         for i, t in enumerate(tips):
-            ui.draw_text(surf, t, 14, DIM, (800, 500 + i * 22), "midleft", bold=False)
+            ui.draw_text(surf, t, 13, DIM, (800, 516 + i * 21), "midleft", bold=False)
 
         self.back.draw(surf)
         self.start.draw(surf)

@@ -7,6 +7,7 @@ broadcast.
 import random
 
 from .cards import Deck
+from .presets import match_name
 
 INTRO_TIME = 2.2
 BOT_PLAY_DELAY = (0.8, 2.6)
@@ -26,6 +27,7 @@ class Engine:
     def __init__(self, library, packs, points=7, hand_size=10, local=False):
         self.lib = library
         self.packs = list(packs)
+        self.preset = match_name(library, self.packs)
         self.goal = points
         self.hand_size = hand_size
         self.local = local  # hot-seat: anyone at the screen may press "next"
@@ -40,6 +42,7 @@ class Engine:
         self.round_pids = set()
         self.subs = []  # [{"pid", "cards", "revealed"}] in judging order
         self.focus = None
+        self.reading = None
         self.winner = None
         self.final = False
         self.bot_due = {}
@@ -99,9 +102,10 @@ class Engine:
                 self.bot_due[pid] = self.t + AWAY_PLAY_DELAY
             self.touch()
 
-    def configure(self, packs=None, points=None, hand=None):
+    def configure(self, packs=None, points=None, hand=None, preset=None):
         if packs is not None:
             self.packs = list(packs)
+            self.preset = preset if preset is not None else match_name(self.lib, self.packs)
         if points is not None:
             self.goal = points
         if hand is not None:
@@ -215,7 +219,8 @@ class Engine:
         order = list(self.played.items())
         random.shuffle(order)
         self.subs = [{"pid": pid, "cards": cards, "revealed": False} for pid, cards in order]
-        self.judge_due = 1.0
+        self.reading = None
+        self.judge_due = 2.0  # a moment to read the black card out loud first
         self.set_phase("judge")
 
     def _auto_judge(self):
@@ -224,10 +229,12 @@ class Engine:
         hidden = [s for s in self.subs if not s["revealed"]]
         if hidden:
             hidden[0]["revealed"] = True
-            self.judge_due = self.t + BOT_REVEAL_GAP + 0.15 * len(hidden[0]["cards"])
+            self.reading = self.subs.index(hidden[0])
+            self.judge_due = self.t + BOT_REVEAL_GAP + 0.6 + 0.4 * len(hidden[0]["cards"])  # time to read it
             self.touch()
         elif self.focus is None:
             self.focus = random.randrange(len(self.subs))
+            self.reading = self.focus
             self.judge_due = self.t + BOT_THINK
             self.touch()
         else:
@@ -240,6 +247,7 @@ class Engine:
             p["score"] += 1
         self.winner = i
         self.focus = i
+        self.reading = i
         self.final = bool(p and p["score"] >= self.goal)
         for sub in self.subs:
             self.white_deck.discard(sub["cards"])
@@ -281,8 +289,10 @@ class Engine:
         if self.phase == "judge":
             i = a.get("i")
             valid = isinstance(i, int) and 0 <= i < len(self.subs)
+            # "reading" is the answer the Czar is reading out right now; everyone's screen shows it in sync.
             if kind == "reveal" and valid and not self.subs[i]["revealed"]:
                 self.subs[i]["revealed"] = True
+                self.reading = i
                 self.touch()
                 return True
             if kind == "reveal_all":
@@ -292,6 +302,7 @@ class Engine:
                 return True
             if kind == "focus" and valid and self.subs[i]["revealed"]:
                 self.focus = i
+                self.reading = i
                 self.touch()
                 return True
             if kind == "award" and valid and all(s["revealed"] for s in self.subs):
@@ -327,10 +338,11 @@ class Engine:
             "mine": [_card(c) for c in self.played.get(pid, [])],
             "subs": subs,
             "focus": self.focus,
+            "reading": self.reading,
             "winner": self.winner,
             "final": self.final,
             "can_next": self.can_next(pid) if pid is not None else self.local,
             "config": {"points": self.goal, "hand": self.hand_size, "packs": len(self.packs), "black": b,
-                       "white": w},
+                       "white": w, "preset": self.preset},
             "ver": self.version,
         }

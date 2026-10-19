@@ -42,6 +42,7 @@ class Group:
         self.revealed = False
         self.pid = None
         self.hover = 0.0
+        self.read = 0.0
         self.label_a = 0.0
         self.center = (TABLE.centerx, TABLE.centery)
         self.label_y = TABLE.centery
@@ -429,9 +430,10 @@ class GameScene(Scene):
             gy = y0 + r * (h + label_h + gap)
             g.center = (gx + (gw - w) / 2, gy)
             g.label_y = gy + h / 2 + 14
+            lift = 6 * g.hover + 12 * g.read
             for j, s in enumerate(g.sprites):
                 s.resize(w)
-                s.move(gx + j * w * 0.5, gy - 6 * g.hover, 1.0 + 0.03 * g.hover)
+                s.move(gx + j * w * 0.5, gy - lift, 1.0 + 0.03 * g.hover + 0.04 * g.read)
 
     # ================================================================ effects
     def burst(self, x, y, n):
@@ -521,7 +523,7 @@ class GameScene(Scene):
                         sub = v["subs"][i]
                         if sub["cards"] is None:
                             self.session.act(self.seat, {"a": "reveal", "i": i, "round": v["round"]})
-                        elif all(s["cards"] is not None for s in v["subs"]):
+                        else:  # read it again / mark it as your pick
                             self.session.act(self.seat, {"a": "focus", "i": i, "round": v["round"]})
                             self.app.sounds.play("select")
                         break
@@ -588,9 +590,11 @@ class GameScene(Scene):
             self.hover_group = None
             if not self.paused and v["phase"] in ("judge", "result"):
                 self.hover_group = next((g for g in self.groups if g.contains(m)), None)
-            for g in self.groups:
+            reading = v.get("reading") if v["phase"] == "judge" else None
+            for i, g in enumerate(self.groups):
                 hov = g is self.hover_group and self.is_judging()
                 g.hover = ui.approach(g.hover, 1.0 if hov else 0.0, 14, dt)
+                g.read = ui.approach(g.read, 1.0 if i == reading else 0.0, 10, dt)
                 g.label_a = ui.approach(g.label_a, 1.0 if v["phase"] == "result" else 0.0, 6, dt)
             self.layout_groups()
 
@@ -631,7 +635,8 @@ class GameScene(Scene):
             a.label, a.callback = "Award point", self.award
             a.enabled = all_rev and v["focus"] is not None
             a.rect = pygame.Rect(668, 652, 220, 50)
-            self.status = "Click your favourite, then Award point" if all_rev else "Flip the cards over one by one"
+            self.status = ("Click each card to read it again, then Award point" if all_rev else
+                           "Flip the cards one by one and read them out")
         elif ph == "result" and v["can_next"]:
             a.label = "Final results" if v["final"] else "Next round"
             a.callback, a.enabled = self.next_round, True
@@ -670,28 +675,22 @@ class GameScene(Scene):
             answers = [s.text for s in self.selected] or [c["t"] for c in v["mine"]]
             self.draw_sentence(surf, PANEL_TOP, answers, None)
         elif ph in ("judge", "result"):
-            g_i = None
-            if self.hover_group is not None and self.hover_group.revealed:
-                g_i = self.groups.index(self.hover_group)
-            elif v["focus"] is not None:
-                g_i = v["focus"]
+            # Everyone sees the same thing at the same time: whatever the Czar is reading out.
+            g_i = v["winner"] if ph == "result" else v.get("reading")
+            czar = "You're" if self.is_judging() else f"{self.name(v['czar'], False)} is"
             if g_i is not None and g_i < len(v["subs"]) and v["subs"][g_i]["cards"]:
-                title = None
-                if ph == "result" and v["winner"] is not None:
-                    wp = v["subs"][v["winner"]]["pid"]
+                if ph == "result":
+                    wp = v["subs"][g_i]["pid"]
                     title = "You win the round!" if (self.session.net and wp == self.session.me) else \
                         f"{self.name(wp, False)} wins the round!"
-                    g_i = v["winner"]
+                else:
+                    title = f"{czar} reading card {g_i + 1} of {len(v['subs'])}"
                 self.draw_sentence(surf, PANEL_BOTTOM, [c["t"] for c in v["subs"][g_i]["cards"]], title)
             else:
-                ui.draw_panel(surf, PANEL_BOTTOM, alpha=150, shadow=False)
-                if self.is_judging():
-                    all_rev = all(s["cards"] is not None for s in v["subs"])
-                    tip = "Hover to read, click to choose the winner" if all_rev else "Click each card to flip it"
-                else:
-                    tip = "The Card Czar is reading the cards..."
-                ui.draw_text(surf, tip, 18, GRAY, (PANEL_BOTTOM[0] + PANEL_BOTTOM[2] / 2,
-                                                    PANEL_BOTTOM[1] + PANEL_BOTTOM[3] / 2), bold=False)
+                # Nothing flipped yet: the black card with its blanks, big, to read out first.
+                title = "Read the card out loud, then flip the answers" if self.is_judging() else \
+                    f"{czar} reading the card..."
+                self.draw_sentence(surf, PANEL_BOTTOM, [], title)
 
         if self.black_sprite:
             self.black_sprite.draw(surf)
