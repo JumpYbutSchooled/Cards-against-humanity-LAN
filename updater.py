@@ -41,9 +41,9 @@ def log(msg):
         pass
 
 
-def read_version(root=ROOT):
+def read_version(root=None):
     try:
-        with open(os.path.join(root, "VERSION"), encoding="utf-8") as f:
+        with open(os.path.join(root or ROOT, "VERSION"), encoding="utf-8") as f:
             return int(f.read().strip())
     except (OSError, ValueError):
         return 0
