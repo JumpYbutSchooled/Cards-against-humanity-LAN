@@ -49,8 +49,24 @@ def read_version(root=None):
         return 0
 
 
+DEV_MARKER = os.path.join(os.path.expanduser("~"), ".cah-dev-folders")
+
+
 def is_dev_copy():
-    return os.path.isdir(os.path.join(ROOT, ".git"))
+    """A developer's own git checkout: updated with git pull, never overwritten.
+
+    Decided per computer (a list of folders in the user's profile), NOT by the presence of .git -
+    a zipped-up copy of the developer's folder includes the hidden .git folder, and those copies
+    on friends' PCs must still update normally.
+    """
+    if not os.path.isdir(os.path.join(ROOT, ".git")):
+        return False
+    try:
+        with open(DEV_MARKER, encoding="utf-8-sig") as f:
+            folders = {os.path.normcase(os.path.abspath(line.strip())) for line in f if line.strip()}
+    except OSError:
+        return False
+    return os.path.normcase(os.path.abspath(ROOT)) in folders
 
 
 def _get(url, timeout, extra=None):
