@@ -21,17 +21,21 @@ class LanScene(Scene):
         st = app.settings
         self.name = TextInput((40, 132, 360, 46), st.get("name", ""), "Your name", 18, 18,
                               on_change=lambda t: st.__setitem__("name", t))
-        self.host_btn = Button((64, 420, 320, 58), "Host Game", self.host, "accent", 21)
+        self.host_btn = Button((64, 566, 336, 56), "Host Game", self.host, "accent", 21)
+        self.packs_btn = Button((64, 478, 336, 38), "Customize packs...", self.on_packs, "secondary", 15)
+        from .scene_packs import PresetChips
+        self.chips = PresetChips(app, 64, 316, 336, self.on_preset, cols=2)
         self.code = TextInput((472, 268, 440, 62), "", "ROOM CODE", 8, 30)
         self.join_code_btn = Button((926, 268, 290, 62), "Join", self.join_code, "accent", 22)
         self.ip = TextInput((574, 588, 410, 40), st.get("last_ip", ""), "IP address, e.g. 192.168.1.23", 40, 15)
         self.join_ip_btn = Button((996, 588, 220, 40), "Join by IP", lambda: self.join(self.ip.text), "secondary",
                                   15)
         self.back = Button((40, 654, 160, 50), "Back", self.go_back, "ghost", 18)
-        self.fixed = self.buttons(self.host_btn, self.join_code_btn, self.join_ip_btn, self.back)
+        self.fixed = self.buttons(self.host_btn, self.packs_btn, self.join_code_btn, self.join_ip_btn, self.back)
         self.browser = Browser()
         self.game_btns = {}
         self.games = []
+        self.preset = None
         self.error = message
         self.connecting = None
         self.t = 0.0
@@ -45,6 +49,15 @@ class LanScene(Scene):
         self.browser.close()
         from .scene_menu import MenuScene
         self.app.switch(MenuScene(self.app))
+
+    def on_preset(self, packs, name):
+        self.app.settings["packs"] = packs
+        self.app.save()
+
+    def on_packs(self):
+        from .scene_packs import PacksScene
+        self.browser.close()
+        self.app.switch(PacksScene(self.app, back=lambda: LanScene(self.app)))
 
     def host(self):
         if self.connecting:
@@ -129,6 +142,8 @@ class LanScene(Scene):
         for b in self.fixed + list(self.game_btns.values()):
             if b.handle(ev):
                 return
+        if self.chips.handle(ev):
+            return
         if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
             self.go_back()
 
@@ -156,6 +171,9 @@ class LanScene(Scene):
         self.join_code_btn.enabled = len(clean_code(self.code.text)) >= 4 and not self.connecting
         for b in self.fixed + list(self.game_btns.values()):
             b.update(dt)
+        from .presets import match_name
+        self.preset = match_name(self.app.library, self.app.settings["packs"], self.app.settings)
+        self.chips.update(dt, self.preset)
 
         c = self.connecting
         if c:
@@ -193,11 +211,17 @@ class LanScene(Scene):
 
         ui.draw_panel(surf, (40, 200, 384, 440))
         ui.draw_text(surf, "Host a game", 22, WHITE, (64, 232), "midleft")
-        lines = ["Start a game on this computer.", "You'll get a room code to share,", "and can fill seats with bots."]
-        for i, t in enumerate(lines):
-            ui.draw_text(surf, t, 15, GRAY, (64, 278 + i * 24), "midleft", bold=False)
-        if not self.online:
-            ui.draw_text(surf, "(online play not set up - LAN only)", 13, DIM, (64, 360), "midleft", bold=False)
+        sub = "You'll get a room code to share." if self.online else "Online play not set up - LAN only."
+        ui.draw_text(surf, sub, 14, GRAY, (64, 262), "midleft", bold=False)
+        ui.draw_text(surf, "Card packs", 16, WHITE, (64, 298), "midleft")
+        self.chips.draw(surf)
+        b, w = self.app.library.counts(self.app.settings["packs"])
+        n = len(self.app.settings["packs"])
+        label = getattr(self, "preset", None) or "Custom mix"
+        ui.draw_text(surf, f"{label}: {n} packs · {b + w:,} cards", 13, ACCENT if self.preset else GRAY,
+                     (64, 456), "midleft", bold=False)
+        self.packs_btn.draw(surf)
+        ui.draw_text(surf, "You can change these in the lobby too.", 12, DIM, (64, 540), "midleft", bold=False)
         self.host_btn.draw(surf)
 
         ui.draw_panel(surf, (448, 200, 792, 440))

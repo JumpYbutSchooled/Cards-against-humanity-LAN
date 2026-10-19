@@ -4,6 +4,7 @@ import math
 import os
 import random
 import sys
+import time
 
 import pygame
 
@@ -126,6 +127,8 @@ def enable_dpi_awareness():
 class App:
     def __init__(self):
         enable_dpi_awareness()
+        # Don't minimise the game when it loses focus in fullscreen (Alt+Tab, notifications).
+        os.environ.setdefault("SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS", "0")
         pygame.mixer.pre_init(44100, -16, 2, 512)
         pygame.init()
         pygame.display.set_caption("Cards Against Humanity")
@@ -136,8 +139,11 @@ class App:
             w = 1280
         h = int(w * 9 / 16)
         self.windowed_size = (w, h)
+        self.windowed_pos = None
         self.screen = pygame.display.set_mode((w, h), pygame.RESIZABLE)
         self.fullscreen = False
+        self._fs_held = False
+        self._fs_last = -10.0
         V.resize(*self.screen.get_size())
         pygame.key.set_repeat(400, 35)
 
@@ -179,13 +185,47 @@ class App:
         self.sounds.play("whoosh")
 
     def toggle_fullscreen(self):
+        """Borderless "desktop" fullscreen: never changes the display mode.
+
+        Exclusive fullscreen made Windows switch display modes on every toggle, which on hybrid-GPU
+        laptops takes ~1s and blanks the screen; queued F11 presses then kept flipping it - a loop that
+        locked the PC up. Desktop fullscreen is just a window covering the screen, so toggling is instant.
+        """
+        now = time.monotonic()
+        if now - self._fs_last < 0.8:  # one toggle per press, however the key behaves
+            return
+        self._fs_last = now
         self.fullscreen = not self.fullscreen
-        if self.fullscreen:
-            self.windowed_size = self.screen.get_size()
-            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        else:
-            self.screen = pygame.display.set_mode(self.windowed_size, pygame.RESIZABLE)
-        V.resize(*self.screen.get_size())
+        try:
+            from pygame._sdl2.video import Window
+            win = Window.from_display_module()
+            if self.fullscreen:
+                self.windowed_size, self.windowed_pos = win.size, win.position
+                win.set_fullscreen(desktop=True)
+            else:
+                win.set_windowed()
+                win.size = self.windowed_size
+                if self.windowed_pos:
+                    win.position = self.windowed_pos
+        except Exception:
+            # Fallback: a borderless window the size of the desktop - still no display mode change.
+            if self.fullscreen:
+                self.windowed_size = self.screen.get_size()
+                size = pygame.display.get_desktop_sizes()[0]
+                os.environ["SDL_VIDEO_WINDOW_POS"] = "0,0"
+                pygame.display.set_mode(size, pygame.NOFRAME)
+            else:
+                os.environ.pop("SDL_VIDEO_WINDOW_POS", None)
+                pygame.display.set_mode(self.windowed_size, pygame.RESIZABLE)
+        pygame.event.clear(pygame.KEYDOWN)  # drop presses that queued up meanwhile
+        self.sync_screen()
+
+    def sync_screen(self):
+        surf = pygame.display.get_surface()
+        if surf is not None:
+            self.screen = surf
+            if surf.get_size() != (V.w, V.h):
+                V.resize(*surf.get_size())
 
     def quit(self):
         self.running = False
@@ -202,16 +242,18 @@ class App:
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
                     self.running = False
-                elif ev.type == pygame.VIDEORESIZE and not self.fullscreen:
-                    self.screen = pygame.display.get_surface()
-                    V.resize(*self.screen.get_size())
+                elif ev.type == pygame.VIDEORESIZE:
+                    self.sync_screen()
                 elif ev.type == pygame.KEYDOWN and (ev.key == pygame.K_F11 or
                                                     (ev.key == pygame.K_RETURN and ev.mod & pygame.KMOD_ALT)):
-                    self.toggle_fullscreen()
+                    if not self._fs_held:  # key repeat (for text boxes) must not re-toggle
+                        self._fs_held = True
+                        self.toggle_fullscreen()
+                elif ev.type == pygame.KEYUP and ev.key in (pygame.K_F11, pygame.K_RETURN):
+                    self._fs_held = False
                 else:
                     self.scene.handle(ev)
-            if self.screen.get_size() != (V.w, V.h):
-                V.resize(*self.screen.get_size())
+            self.sync_screen()
             self.bg.update(dt)
             self.scene.update(dt)
             self.bg.draw(self.screen)

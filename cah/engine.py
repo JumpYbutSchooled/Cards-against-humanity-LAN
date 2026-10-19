@@ -106,11 +106,28 @@ class Engine:
         if packs is not None:
             self.packs = list(packs)
             self.preset = preset if preset is not None else match_name(self.lib, self.packs)
+            if self.phase != "lobby":
+                self.rebuild_decks()
         if points is not None:
             self.goal = points
         if hand is not None:
             self.hand_size = hand
         self.touch()
+
+    def rebuild_decks(self):
+        """Mid-game pack change: new draw piles from the new packs, minus cards already in play."""
+        if not self.black_deck:
+            return False
+        black, white = self.lib.build(self.packs)
+        in_play = {c.text for p in self.players for c in p["hand"]}
+        in_play |= {c.text for cards in self.played.values() for c in cards}
+        white = [c for c in white if c.text not in in_play]
+        black = [c for c in black if not self.black or c.text != self.black.text]
+        if not black or len(white) < len(self.players) * 3:
+            return False  # not playable - keep the old piles
+        self.black_deck, self.white_deck = Deck(black), Deck(white)
+        self.touch()
+        return True
 
     def deck_counts(self):
         return self.lib.counts(self.packs)

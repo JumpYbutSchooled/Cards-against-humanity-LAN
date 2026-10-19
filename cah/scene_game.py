@@ -89,19 +89,27 @@ class GameScene(Scene):
         self.action = Button((530, 346, 260, 52), "", None, "accent", 19)
         self.reveal_all = Button((462, 654, 190, 46), "Reveal all", self.do_reveal_all, "secondary", 16)
         self.menu_btn = Button((24, 18, 96, 38), "Menu", self.toggle_pause, "ghost", 15)
-        self.p_resume = Button((490, 300, 300, 56), "Resume", self.toggle_pause, "primary", 20)
-        self.p_restart = Button((490, 370, 300, 52), "Restart game", self.restart, "secondary", 18)
         leave_label = "End game for everyone" if host else ("Leave game" if net else "Main menu")
-        self.p_leave = Button((490, 434 if not net else 370, 300, 52), leave_label, self.leave, "ghost", 18)
+        self.p_resume = Button((490, 0, 300, 56), "Resume", self.toggle_pause, "primary", 20)
+        self.p_packs = Button((490, 0, 300, 52), "Change card packs", self.open_packs, "secondary", 18)
+        self.p_restart = Button((490, 0, 300, 52), "Restart game", self.restart, "secondary", 18)
+        self.p_leave = Button((490, 0, 300, 52), leave_label, self.leave, "ghost", 18)
         self.p_restart.visible = not net
+        self.p_packs.visible = host or not net  # the host (or a local game) controls the packs
+        y = 296
+        for b in (self.p_resume, self.p_packs, self.p_restart, self.p_leave):
+            if b.visible:
+                b.rect.y = y
+                y += b.rect.h + 10
+        self.pause_h = y - 296 + 100
         again = "Back to lobby" if host else "Play again"
         self.o_again = Button((440, 560, 190, 54), again, self.restart, "accent", 19)
         self.o_again.visible = not (net and not host)
         self.o_menu = Button((650, 560, 190, 54), "End game" if host else ("Leave" if net else "Main menu"),
                              self.leave, "secondary", 19)
         self.err_btn = Button((540, 400, 200, 52), "Back to menu", self.leave, "primary", 18)
-        self.buttons(self.action, self.reveal_all, self.menu_btn, self.p_resume, self.p_restart, self.p_leave,
-                     self.o_again, self.o_menu, self.err_btn)
+        self.buttons(self.action, self.reveal_all, self.menu_btn, self.p_resume, self.p_packs, self.p_restart,
+                     self.p_leave, self.o_again, self.o_menu, self.err_btn)
 
     # ================================================================ helpers
     def player(self, pid):
@@ -219,6 +227,22 @@ class GameScene(Scene):
 
     def toggle_pause(self):
         self.paused = not self.paused
+
+    def open_packs(self):
+        """Host / local game: change packs mid-game; new cards come from the new packs from now on."""
+        from .scene_packs import PacksScene
+
+        def back():
+            packs = list(self.app.settings["packs"])
+            if self.session.local:
+                self.session.engine.configure(packs=packs)
+            elif self.session.is_host:
+                from .presets import match_name
+                name = match_name(self.app.library, packs, self.app.settings) or ""
+                self.session.server.host(lambda e: e.configure(packs=packs, preset=name))
+            self.paused = False
+            return self
+        self.app.switch(PacksScene(self.app, back=back))
 
     # ================================================================ syncing snapshots -> sprites
     def sync(self, v):
@@ -488,7 +512,7 @@ class GameScene(Scene):
                 self.o_menu.click()
             return
         if self.paused:
-            for b in (self.p_resume, self.p_restart, self.p_leave):
+            for b in (self.p_resume, self.p_packs, self.p_restart, self.p_leave):
                 if b.handle(ev):
                     return
             if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
@@ -530,8 +554,8 @@ class GameScene(Scene):
 
     # ================================================================ update
     def update(self, dt):
-        for b in (self.action, self.reveal_all, self.menu_btn, self.p_resume, self.p_restart, self.p_leave,
-                  self.o_again, self.o_menu, self.err_btn):
+        for b in (self.action, self.reveal_all, self.menu_btn, self.p_resume, self.p_packs, self.p_restart,
+                  self.p_leave, self.o_again, self.o_menu, self.err_btn):
             b.update(dt)
         err = self.session.error and not self.session.local
         self.err_a = ui.approach(self.err_a, 1.0 if err else 0.0, 10, dt)
@@ -813,15 +837,14 @@ class GameScene(Scene):
     def draw_pause(self, surf):
         k = ui.ease_out(self.pause_a)
         ui.dim_screen(surf, 170 * k)
-        h = 250 if self.session.net else 320
-        ui.draw_panel(surf, (440, 200 + 20 * (1 - k), 400, h), fade=k)
+        ui.draw_panel(surf, (440, 200 + 20 * (1 - k), 400, self.pause_h + 20), fade=k)
         ui.draw_text(surf, "Paused" if not self.session.net else "Menu", 34, WHITE, (640, 252 + 20 * (1 - k)),
                      alpha=255 * k)
-        for b in (self.p_resume, self.p_restart, self.p_leave):
+        for b in (self.p_resume, self.p_packs, self.p_restart, self.p_leave):
             b.draw(surf)
         if self.session.net:
-            ui.draw_text(surf, "The game keeps going while this is open.", 13, GRAY, (640, 436), bold=False,
-                         alpha=255 * k)
+            ui.draw_text(surf, "The game keeps going while this is open.", 13, GRAY, (640, 200 + self.pause_h),
+                         bold=False, alpha=255 * k)
 
     def draw_gameover(self, surf):
         k = ui.ease_out(self.over_a)
