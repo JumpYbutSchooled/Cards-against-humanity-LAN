@@ -97,16 +97,7 @@ def _make_face(kind, text, pw, ph, pick, pack, back):
 
     fpx = max(5, int(pw * 0.046))
     fy = ph - int(footer_h * 0.5)
-    if pack and pw >= 90:
-        label = pack if len(pack) <= 34 else pack[:32].rstrip() + "..."
-        img = ui.text_surf_px(label, fpx, (120, 120, 126) if kind == "black" else (150, 150, 146))
-        if img.get_width() > pw - pad * 2 - (pw * 0.3 if kind == "black" and pick > 1 else 0):
-            _logo(surf, pad, fy, fpx, fg, bg)
-        else:
-            surf.blit(img, (pad, fy - img.get_height() // 2))
-    else:
-        _logo(surf, pad, fy, fpx, fg, bg)
-
+    right = pw - pad  # the footer text must end before this (the PICK badge claims the right side)
     if kind == "black" and pick > 1:
         bpx = max(6, int(pw * 0.062))
         label = ui.text_surf_px("PICK", bpx, WHITE)
@@ -115,7 +106,23 @@ def _make_face(kind, text, pw, ph, pick, pack, back):
         cx = pw - pad - cr
         pygame.draw.circle(surf, WHITE, (cx, fy), cr)
         surf.blit(num, num.get_rect(center=(cx, fy + 1)))
-        surf.blit(label, label.get_rect(midright=(cx - cr - int(pw * 0.03), fy)))
+        lr = label.get_rect(midright=(cx - cr - int(pw * 0.03), fy))
+        surf.blit(label, lr)
+        right = lr.left - int(pw * 0.05)
+
+    avail = right - pad
+    f = ui.font_px(fpx)
+    if pack and pw >= 90:
+        label = pack
+        if f.size(label)[0] > avail:  # shorten with "..." until it fits beside the badge
+            while label and f.size(label + "...")[0] > avail:
+                label = label[:-1]
+            label = label.rstrip(" ,:-") + "..." if label else ""
+        if label:
+            img = ui.text_surf_px(label, fpx, (120, 120, 126) if kind == "black" else (150, 150, 146))
+            surf.blit(img, (pad, fy - img.get_height() // 2))
+    elif f.size("Cards Against Humanity")[0] + fpx * 1.5 <= avail:
+        _logo(surf, pad, fy, fpx, fg, bg)
     return surf
 
 

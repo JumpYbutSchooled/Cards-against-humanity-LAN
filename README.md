@@ -34,6 +34,7 @@ Keys: Esc opens the menu, Enter or Space confirms, 1–9 pick cards, F11 toggles
 - **Classic**: the base game and main expansions.
 - **Party**: everything except family packs and conversion kits.
 - **18+ Filthy**: Classic plus the dirtiest packs.
+- **Sex & Vulgarity**: only sex jokes and crude cards, picked one by one from every pack (about 4,200 white and 360 black). `tools/dirty_filter.py` decides what counts, and `tools/build_cards.py` rebuilds it.
 - **Family**: clean packs only.
 - **All Official**, **Everything**, and **Base Game**.
 

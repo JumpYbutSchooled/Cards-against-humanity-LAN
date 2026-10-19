@@ -28,9 +28,11 @@ class Library:
 
         def key(k):
             cat, g = k
+            if cat == "Mixes":  # themed packs built from every pack go first
+                return (0, 0, g.lower())
             if cat == "Official":
-                return (0, OFFICIAL_ORDER.index(g) if g in OFFICIAL_ORDER else 99, g)
-            return (1, 1 if g == OTHER_GROUP else 0, g.lower())
+                return (1, OFFICIAL_ORDER.index(g) if g in OFFICIAL_ORDER else 99, g)
+            return (2, 1 if g == OTHER_GROUP else 0, g.lower())
 
         self.groups = []
         for k in sorted(groups, key=key):

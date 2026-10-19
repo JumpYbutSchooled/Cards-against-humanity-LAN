@@ -2051,6 +2051,16 @@
    "file": "Third-Party/Words Against Morality/Words Against Morality Volume 4.json",
    "black": 30,
    "white": 80
+  },
+  {
+   "id": "mix-sex",
+   "name": "Sex & Vulgarity",
+   "official": false,
+   "category": "Mixes",
+   "group": "Mixes",
+   "file": "Mixes/Sex & Vulgarity.json",
+   "black": 357,
+   "white": 4173
   }
  ]
 }

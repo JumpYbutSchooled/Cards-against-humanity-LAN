@@ -344,7 +344,12 @@ class Server:
 
     def _listen(self):
         self.listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        if hasattr(socket, "SO_EXCLUSIVEADDRUSE"):
+            # Windows: SO_REUSEADDR would let a second game on this PC share the port silently, and
+            # players could land in the wrong game. Exclusive use makes the second host move to the next port.
+            self.listener.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        else:
+            self.listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         for port in range(GAME_PORT, GAME_PORT + 10):
             try:
                 self.listener.bind(("", port))

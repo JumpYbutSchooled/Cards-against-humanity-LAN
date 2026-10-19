@@ -21,9 +21,10 @@ BUILTIN = [
     ("Classic", "The base game and the main expansions"),
     ("Party", "Everything except family packs and conversion kits"),
     ("18+ Filthy", "Classic plus the dirtiest packs"),
+    ("Sex & Vulgarity", "Only sex jokes and crude cards, from every pack"),
     ("Family", "Clean packs - fine for kids and grandparents"),
     ("All Official", "Every official CAH pack"),
-    ("Everything", "All 205 packs, no exceptions"),
+    ("Everything", "Every pack, no exceptions"),
     ("Base Game", "Just the CAH base set"),
 ]
 
@@ -38,12 +39,14 @@ def builtin(lib):
     conv = {p["id"] for p in packs if _match(p["name"], CONVERSIONS)}
     classic = [p["id"] for p in packs if p["name"] in CLASSIC]
     filthy = {p["id"] for p in packs if _match(p["name"], FILTHY)}
+    mixes = {p["id"] for p in packs if p.get("category") == "Mixes"}
     ids = {
         "Classic": classic,
-        "Party": [p["id"] for p in packs if p["id"] not in family | conv],
+        "Party": [p["id"] for p in packs if p["id"] not in family | conv | mixes],
         "18+ Filthy": [p["id"] for p in packs if p["id"] in filthy or p["id"] in classic],
+        "Sex & Vulgarity": [p["id"] for p in packs if p.get("category") == "Mixes" and p["name"] == "Sex & Vulgarity"],
         "Family": [p["id"] for p in packs if p["id"] in family],
-        "All Official": [p["id"] for p in packs if p["official"] and p["id"] not in family | conv],
+        "All Official": [p["id"] for p in packs if p["official"] and p["id"] not in family | conv | mixes],
         "Everything": [p["id"] for p in packs],
         "Base Game": lib.default_selection(),
     }

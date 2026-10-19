@@ -78,6 +78,35 @@ def clean(text):
     return "\n".join(ln for ln in lines if ln) if any(lines) else ""
 
 
+def build_mixes(index):
+    """Themed packs made of matching cards from every pack (e.g. only sex jokes and vulgarity)."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from dirty_filter import is_dirty
+
+    white, black, seen = [], [], set()
+    for p in index:
+        with open(os.path.join(OUT, *p["file"].split("/")), encoding="utf-8") as f:
+            d = json.load(f)
+        for t in d["white"]:
+            k = re.sub(r"[^a-z0-9]", "", t.lower())
+            if k not in seen and is_dirty(t):
+                seen.add(k)
+                white.append(t)
+        for b in d["black"]:
+            k = re.sub(r"[^a-z0-9]", "", b["text"].lower())
+            if k not in seen and is_dirty(b["text"]):
+                seen.add(k)
+                black.append(b)
+    name, group = "Sex & Vulgarity", "Mixes"
+    rel = f"Mixes/{name}.json"
+    os.makedirs(os.path.join(OUT, "Mixes"), exist_ok=True)
+    with open(os.path.join(OUT, "Mixes", name + ".json"), "w", encoding="utf-8") as f:
+        json.dump({"name": name, "official": False, "category": "Mixes", "group": group, "black": black,
+                   "white": white}, f, ensure_ascii=False, indent=1)
+    return [{"id": "mix-sex", "name": name, "official": False, "category": "Mixes", "group": group, "file": rel,
+             "black": len(black), "white": len(white)}]
+
+
 def main():
     if len(sys.argv) > 1:
         with open(sys.argv[1], encoding="utf-8") as f:
@@ -131,6 +160,8 @@ def main():
                        "black": black, "white": white}, f, ensure_ascii=False, indent=1)
         index.append({"id": f"p{i:03d}", "name": p["name"], "official": official, "category": category,
                       "group": group, "file": rel, "black": len(black), "white": len(white)})
+
+    index += build_mixes(index)
 
     with open(os.path.join(OUT, "index.json"), "w", encoding="utf-8") as f:
         json.dump({"source": "JSON Against Humanity (github.com/crhallberg/json-against-humanity)",

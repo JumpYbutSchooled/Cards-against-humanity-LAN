@@ -10,8 +10,9 @@ from .ui import Button, TextInput, V, WHITE, GRAY, DIM, INK, ACCENT, PANEL, PANE
 LIST = pygame.Rect(316, 166, 924, 474)
 SIDE = pygame.Rect(40, 166, 256, 474)
 SECTION_H, GROUP_H, PACK_H = 54, 50, 40
-PRESET_H = 46
-SECTION_LABEL = {"Official": "Official Cards Against Humanity", "Third-Party": "Third-Party & Community Games"}
+PRESET_H = 43
+SECTION_LABEL = {"Mixes": "Mixes - matching cards from every pack", "Official": "Official Cards Against Humanity",
+                 "Third-Party": "Third-Party & Community Games"}
 
 
 def card_icon(surf, x, y, black):
@@ -26,7 +27,7 @@ def card_icon(surf, x, y, black):
 
 class PresetChips:
     """Quick preset buttons for the setup screen and the host lobby."""
-    NAMES = ["Classic", "Party", "18+ Filthy", "Family", "All Official", "Everything"]
+    NAMES = ["Classic", "Party", "18+ Filthy", "Sex & Vulgarity", "Family", "Everything"]
 
     def __init__(self, app, x, y, w, on_pick, cols=3, h=34, gap=8):
         self.app = app
