@@ -1,0 +1,37 @@
+{
+ "name": "Conspiracy Theory - Kickstarter Bonus Cards Pack",
+ "official": false,
+ "category": "Third-Party",
+ "group": "Conspiracy Theory",
+ "black": [
+  {
+   "text": "_ has taken over _ in the service of Great Cthulu.",
+   "pick": 2
+  },
+  {
+   "text": "The next executive order will outlaw _.",
+   "pick": 1
+  },
+  {
+   "text": "The whole 2016 election was really a battle between _ and _.",
+   "pick": 2
+  },
+  {
+   "text": "Who is watching when you're in the bathroom? _",
+   "pick": 1
+  }
+ ],
+ "white": [
+  "Bank bailouts",
+  "Brexit",
+  "Covfefe",
+  "Furries",
+  "Gerrymandering",
+  "Kickstarter®",
+  "Loan sharks or left sharks, whichever",
+  "Mexico",
+  "Moon rocks",
+  "Pizzagate",
+  "Yoga pants"
+ ]
+}

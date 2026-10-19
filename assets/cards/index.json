@@ -1,0 +1,2056 @@
+{
+ "source": "JSON Against Humanity (github.com/crhallberg/json-against-humanity)",
+ "license": "CC BY-NC-SA",
+ "packs": [
+  {
+   "id": "p000",
+   "name": "CAH Base Set",
+   "official": true,
+   "category": "Official",
+   "group": "Base Game",
+   "file": "Official/Base Game/CAH Base Set.json",
+   "black": 282,
+   "white": 1275
+  },
+  {
+   "id": "p001",
+   "name": "2012 Holiday Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Holiday Packs",
+   "file": "Official/Holiday Packs/2012 Holiday Pack.json",
+   "black": 7,
+   "white": 23
+  },
+  {
+   "id": "p002",
+   "name": "2013 Holiday Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Holiday Packs",
+   "file": "Official/Holiday Packs/2013 Holiday Pack.json",
+   "black": 9,
+   "white": 21
+  },
+  {
+   "id": "p003",
+   "name": "2014 Holiday Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Holiday Packs",
+   "file": "Official/Holiday Packs/2014 Holiday Pack.json",
+   "black": 7,
+   "white": 24
+  },
+  {
+   "id": "p004",
+   "name": "90s Nostalgia Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/90s Nostalgia Pack.json",
+   "black": 7,
+   "white": 25
+  },
+  {
+   "id": "p005",
+   "name": "Absurd Box Expansion",
+   "official": true,
+   "category": "Official",
+   "group": "Box Expansions",
+   "file": "Official/Box Expansions/Absurd Box Expansion.json",
+   "black": 45,
+   "white": 257
+  },
+  {
+   "id": "p006",
+   "name": "CAH: 2000s Nostalgia Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/CAH 2000s Nostalgia Pack.json",
+   "black": 5,
+   "white": 25
+  },
+  {
+   "id": "p007",
+   "name": "CAH: A.I. Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Box Expansions",
+   "file": "Official/Box Expansions/CAH A.I. Pack.json",
+   "black": 0,
+   "white": 30
+  },
+  {
+   "id": "p008",
+   "name": "CAH: Ass Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Box Expansions",
+   "file": "Official/Box Expansions/CAH Ass Pack.json",
+   "black": 3,
+   "white": 27
+  },
+  {
+   "id": "p009",
+   "name": "CAH: Blue Box Expansion",
+   "official": true,
+   "category": "Official",
+   "group": "Box Expansions",
+   "file": "Official/Box Expansions/CAH Blue Box Expansion.json",
+   "black": 81,
+   "white": 240
+  },
+  {
+   "id": "p010",
+   "name": "CAH: Box Expansion",
+   "official": true,
+   "category": "Official",
+   "group": "Box Expansions",
+   "file": "Official/Box Expansions/CAH Box Expansion.json",
+   "black": 0,
+   "white": 23
+  },
+  {
+   "id": "p011",
+   "name": "CAH: Canadian Conversion Kit",
+   "official": true,
+   "category": "Official",
+   "group": "Base Game",
+   "file": "Official/Base Game/CAH Canadian Conversion Kit.json",
+   "black": 8,
+   "white": 23
+  },
+  {
+   "id": "p012",
+   "name": "CAH: College Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/CAH College Pack.json",
+   "black": 6,
+   "white": 24
+  },
+  {
+   "id": "p013",
+   "name": "CAH: Family Edition (Free Print & Play Public Beta)",
+   "official": true,
+   "category": "Official",
+   "group": "Base Game",
+   "file": "Official/Base Game/CAH Family Edition (Free Print & Play Public Beta).json",
+   "black": 68,
+   "white": 347
+  },
+  {
+   "id": "p014",
+   "name": "CAH: Fifth Expansion",
+   "official": true,
+   "category": "Official",
+   "group": "Numbered Expansions",
+   "file": "Official/Numbered Expansions/CAH Fifth Expansion.json",
+   "black": 25,
+   "white": 78
+  },
+  {
+   "id": "p015",
+   "name": "CAH: First Expansion",
+   "official": true,
+   "category": "Official",
+   "group": "Numbered Expansions",
+   "file": "Official/Numbered Expansions/CAH First Expansion.json",
+   "black": 28,
+   "white": 112
+  },
+  {
+   "id": "p016",
+   "name": "CAH: Fourth Expansion",
+   "official": true,
+   "category": "Official",
+   "group": "Numbered Expansions",
+   "file": "Official/Numbered Expansions/CAH Fourth Expansion.json",
+   "black": 31,
+   "white": 71
+  },
+  {
+   "id": "p017",
+   "name": "CAH: Green Box Expansion",
+   "official": true,
+   "category": "Official",
+   "group": "Box Expansions",
+   "file": "Official/Box Expansions/CAH Green Box Expansion.json",
+   "black": 56,
+   "white": 249
+  },
+  {
+   "id": "p018",
+   "name": "CAH: Hidden Gems Bundle: A Few New Cards We Crammed Into This Bundle Pack (Amazon Exclusive)",
+   "official": true,
+   "category": "Official",
+   "group": "Box Expansions",
+   "file": "Official/Box Expansions/CAH Hidden Gems Bundle A Few New Cards We Crammed Into This Bundle Pack (Amazon Exclusive).json",
+   "black": 3,
+   "white": 7
+  },
+  {
+   "id": "p019",
+   "name": "CAH: Human Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Box Expansions",
+   "file": "Official/Box Expansions/CAH Human Pack.json",
+   "black": 2,
+   "white": 28
+  },
+  {
+   "id": "p020",
+   "name": "CAH: Main Deck",
+   "official": true,
+   "category": "Official",
+   "group": "Base Game",
+   "file": "Official/Base Game/CAH Main Deck.json",
+   "black": 5,
+   "white": 34
+  },
+  {
+   "id": "p021",
+   "name": "CAH: Procedurally-Generated Cards",
+   "official": true,
+   "category": "Official",
+   "group": "Box Expansions",
+   "file": "Official/Box Expansions/CAH Procedurally-Generated Cards.json",
+   "black": 0,
+   "white": 288
+  },
+  {
+   "id": "p022",
+   "name": "CAH: Red Box Expansion",
+   "official": true,
+   "category": "Official",
+   "group": "Box Expansions",
+   "file": "Official/Box Expansions/CAH Red Box Expansion.json",
+   "black": 73,
+   "white": 283
+  },
+  {
+   "id": "p023",
+   "name": "CAH: Second Expansion",
+   "official": true,
+   "category": "Official",
+   "group": "Numbered Expansions",
+   "file": "Official/Numbered Expansions/CAH Second Expansion.json",
+   "black": 28,
+   "white": 84
+  },
+  {
+   "id": "p024",
+   "name": "CAH: Sixth Expansion",
+   "official": true,
+   "category": "Official",
+   "group": "Numbered Expansions",
+   "file": "Official/Numbered Expansions/CAH Sixth Expansion.json",
+   "black": 26,
+   "white": 77
+  },
+  {
+   "id": "p025",
+   "name": "CAH: Third Expansion",
+   "official": true,
+   "category": "Official",
+   "group": "Numbered Expansions",
+   "file": "Official/Numbered Expansions/CAH Third Expansion.json",
+   "black": 25,
+   "white": 77
+  },
+  {
+   "id": "p026",
+   "name": "CAH: UK Conversion Kit",
+   "official": true,
+   "category": "Official",
+   "group": "Base Game",
+   "file": "Official/Base Game/CAH UK Conversion Kit.json",
+   "black": 20,
+   "white": 74
+  },
+  {
+   "id": "p027",
+   "name": "Cards Against Humanity Saves America Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/Cards Against Humanity Saves America Pack.json",
+   "black": 7,
+   "white": 26
+  },
+  {
+   "id": "p028",
+   "name": "ClickHole Greeting Cards Pack (Target Exclusive)",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/ClickHole Greeting Cards Pack (Target Exclusive).json",
+   "black": 5,
+   "white": 10
+  },
+  {
+   "id": "p029",
+   "name": "Dad Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Dad Pack.json",
+   "black": 6,
+   "white": 24
+  },
+  {
+   "id": "p030",
+   "name": "Desert Bus For Hope Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/Desert Bus For Hope Pack.json",
+   "black": 5,
+   "white": 19
+  },
+  {
+   "id": "p031",
+   "name": "Fantasy Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Fantasy Pack.json",
+   "black": 6,
+   "white": 26
+  },
+  {
+   "id": "p032",
+   "name": "Fascism Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Fascism Pack.json",
+   "black": 2,
+   "white": 15
+  },
+  {
+   "id": "p033",
+   "name": "Food Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Food Pack.json",
+   "black": 6,
+   "white": 24
+  },
+  {
+   "id": "p034",
+   "name": "Geek Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Geek Pack.json",
+   "black": 6,
+   "white": 24
+  },
+  {
+   "id": "p035",
+   "name": "Gen Con 2018 Midterm Election Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/Gen Con 2018 Midterm Election Pack.json",
+   "black": 2,
+   "white": 16
+  },
+  {
+   "id": "p036",
+   "name": "House of Cards Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/House of Cards Pack.json",
+   "black": 9,
+   "white": 16
+  },
+  {
+   "id": "p037",
+   "name": "Jack White Show Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/Jack White Show Pack.json",
+   "black": 1,
+   "white": 6
+  },
+  {
+   "id": "p038",
+   "name": "Jew Pack/Chosen People Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Jew PackChosen People Pack.json",
+   "black": 5,
+   "white": 25
+  },
+  {
+   "id": "p039",
+   "name": "Mass Effect Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/Mass Effect Pack.json",
+   "black": 4,
+   "white": 10
+  },
+  {
+   "id": "p040",
+   "name": "Nerd Bundle: A Few More Cards For You Nerds (Target Exclusive)",
+   "official": true,
+   "category": "Official",
+   "group": "Box Expansions",
+   "file": "Official/Box Expansions/Nerd Bundle A Few More Cards For You Nerds (Target Exclusive).json",
+   "black": 1,
+   "white": 9
+  },
+  {
+   "id": "p041",
+   "name": "PAX 2010 \"Oops\" Kit",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX 2010 Oops Kit.json",
+   "black": 5,
+   "white": 9
+  },
+  {
+   "id": "p042",
+   "name": "PAX East 2013 Promo Pack A",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX East 2013 Promo Pack A.json",
+   "black": 2,
+   "white": 0
+  },
+  {
+   "id": "p043",
+   "name": "PAX East 2013 Promo Pack B",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX East 2013 Promo Pack B.json",
+   "black": 2,
+   "white": 8
+  },
+  {
+   "id": "p044",
+   "name": "PAX East 2013 Promo Pack C",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX East 2013 Promo Pack C.json",
+   "black": 2,
+   "white": 8
+  },
+  {
+   "id": "p045",
+   "name": "PAX East 2014",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX East 2014.json",
+   "black": 5,
+   "white": 22
+  },
+  {
+   "id": "p046",
+   "name": "PAX East 2014 - Panel Cards",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX East 2014 - Panel Cards.json",
+   "black": 2,
+   "white": 8
+  },
+  {
+   "id": "p047",
+   "name": "PAX Prime 2013",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX Prime 2013.json",
+   "black": 7,
+   "white": 37
+  },
+  {
+   "id": "p048",
+   "name": "PAX Prime 2014 - Panel Cards",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX Prime 2014 - Panel Cards.json",
+   "black": 5,
+   "white": 5
+  },
+  {
+   "id": "p049",
+   "name": "PAX Prime 2014 Custom Printed Cards",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX Prime 2014 Custom Printed Cards.json",
+   "black": 1,
+   "white": 105
+  },
+  {
+   "id": "p050",
+   "name": "PAX Prime 2015 Food Pack A (Mango)",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX Prime 2015 Food Pack A (Mango).json",
+   "black": 2,
+   "white": 8
+  },
+  {
+   "id": "p051",
+   "name": "PAX Prime 2015 Food Pack B (Coconut)",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX Prime 2015 Food Pack B (Coconut).json",
+   "black": 2,
+   "white": 8
+  },
+  {
+   "id": "p052",
+   "name": "PAX Prime 2015 Food Pack C (Cherry)",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/PAX Prime 2015 Food Pack C (Cherry).json",
+   "black": 2,
+   "white": 8
+  },
+  {
+   "id": "p053",
+   "name": "Period Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Period Pack.json",
+   "black": 6,
+   "white": 24
+  },
+  {
+   "id": "p054",
+   "name": "Pride Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Pride Pack.json",
+   "black": 5,
+   "white": 25
+  },
+  {
+   "id": "p055",
+   "name": "Reject Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/Reject Pack.json",
+   "black": 8,
+   "white": 16
+  },
+  {
+   "id": "p056",
+   "name": "Reject Pack 2",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/Reject Pack 2.json",
+   "black": 10,
+   "white": 24
+  },
+  {
+   "id": "p057",
+   "name": "Reject Pack 3",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/Reject Pack 3.json",
+   "black": 2,
+   "white": 23
+  },
+  {
+   "id": "p058",
+   "name": "Retail Mini Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/Retail Mini Pack.json",
+   "black": 2,
+   "white": 3
+  },
+  {
+   "id": "p059",
+   "name": "Retail Product Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/Retail Product Pack.json",
+   "black": 1,
+   "white": 19
+  },
+  {
+   "id": "p060",
+   "name": "Sci-Fi Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Sci-Fi Pack.json",
+   "black": 7,
+   "white": 23
+  },
+  {
+   "id": "p061",
+   "name": "Science Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Science Pack.json",
+   "black": 7,
+   "white": 23
+  },
+  {
+   "id": "p062",
+   "name": "Seasons Greetings Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Holiday Packs",
+   "file": "Official/Holiday Packs/Seasons Greetings Pack.json",
+   "black": 7,
+   "white": 23
+  },
+  {
+   "id": "p063",
+   "name": "TableTop Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Promos & Conventions",
+   "file": "Official/Promos & Conventions/TableTop Pack.json",
+   "black": 3,
+   "white": 12
+  },
+  {
+   "id": "p064",
+   "name": "Theatre Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Theatre Pack.json",
+   "black": 5,
+   "white": 25
+  },
+  {
+   "id": "p065",
+   "name": "Theatre Pack - CATS Musical Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Theatre Pack - CATS Musical Pack.json",
+   "black": 3,
+   "white": 27
+  },
+  {
+   "id": "p066",
+   "name": "Trump Bug Out Bag/Post-Trump Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Trump Bug Out BagPost-Trump Pack.json",
+   "black": 3,
+   "white": 22
+  },
+  {
+   "id": "p067",
+   "name": "Vote For Hillary Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Vote For Hillary Pack.json",
+   "black": 3,
+   "white": 12
+  },
+  {
+   "id": "p068",
+   "name": "Vote For Trump Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Vote For Trump Pack.json",
+   "black": 3,
+   "white": 12
+  },
+  {
+   "id": "p069",
+   "name": "Weed Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Weed Pack.json",
+   "black": 5,
+   "white": 25
+  },
+  {
+   "id": "p070",
+   "name": "World Wide Web Pack",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/World Wide Web Pack.json",
+   "black": 9,
+   "white": 21
+  },
+  {
+   "id": "p071",
+   "name": "2016 Election Game",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/2016 Election Game.json",
+   "black": 50,
+   "white": 198
+  },
+  {
+   "id": "p072",
+   "name": "Babies vs. Parents",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Babies vs. Parents.json",
+   "black": 80,
+   "white": 186
+  },
+  {
+   "id": "p073",
+   "name": "Bad Campaign, The Presidential Party Game!",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Bad Campaign, The Presidential Party Game!.json",
+   "black": 90,
+   "white": 450
+  },
+  {
+   "id": "p074",
+   "name": "Bad Hombres Against Fake News Pack 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Bad Hombres Against Fake News Pack 1.json",
+   "black": 30,
+   "white": 90
+  },
+  {
+   "id": "p075",
+   "name": "Bards Dispense Profanity",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Bards Dispense Profanity.json",
+   "black": 100,
+   "white": 375
+  },
+  {
+   "id": "p076",
+   "name": "Black Box Press Kit",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Black Box Press Kit.json",
+   "black": 0,
+   "white": 1
+  },
+  {
+   "id": "p077",
+   "name": "Blurbs Against Buffalo",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Blurbs Against Buffalo.json",
+   "black": 18,
+   "white": 54
+  },
+  {
+   "id": "p078",
+   "name": "Cads About Maternity - A game for bad mommies",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Cads About Maternity - A game for bad mommies.json",
+   "black": 30,
+   "white": 155
+  },
+  {
+   "id": "p079",
+   "name": "Cads About Matrimony",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cads About Matrimony",
+   "file": "Third-Party/Cads About Matrimony/Cads About Matrimony.json",
+   "black": 55,
+   "white": 231
+  },
+  {
+   "id": "p080",
+   "name": "Cads About Matrimony Poly Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cads About Matrimony",
+   "file": "Third-Party/Cads About Matrimony/Cads About Matrimony Poly Pack.json",
+   "black": 83,
+   "white": 320
+  },
+  {
+   "id": "p081",
+   "name": "Cads About Matrimony: Expansion 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cads About Matrimony",
+   "file": "Third-Party/Cads About Matrimony/Cads About Matrimony Expansion 1.json",
+   "black": 25,
+   "white": 85
+  },
+  {
+   "id": "p082",
+   "name": "Cads Against Adulting",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Cads Against Adulting.json",
+   "black": 100,
+   "white": 350
+  },
+  {
+   "id": "p083",
+   "name": "Cakes Athirst Hilarity Volume 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cakes Athirst Hilarity",
+   "file": "Third-Party/Cakes Athirst Hilarity/Cakes Athirst Hilarity Volume 1.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p084",
+   "name": "Cakes Athirst Hilarity Volume 2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cakes Athirst Hilarity",
+   "file": "Third-Party/Cakes Athirst Hilarity/Cakes Athirst Hilarity Volume 2.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p085",
+   "name": "Cakes Athirst Hilarity Volume 3",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cakes Athirst Hilarity",
+   "file": "Third-Party/Cakes Athirst Hilarity/Cakes Athirst Hilarity Volume 3.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p086",
+   "name": "Cakes Athirst Hilarity Volume 4",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cakes Athirst Hilarity",
+   "file": "Third-Party/Cakes Athirst Hilarity/Cakes Athirst Hilarity Volume 4.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p087",
+   "name": "Carbs of the Huge Manatee - Kink Expansion 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Carbs of the Huge Manatee",
+   "file": "Third-Party/Carbs of the Huge Manatee/Carbs of the Huge Manatee - Kink Expansion 1.json",
+   "black": 22,
+   "white": 92
+  },
+  {
+   "id": "p088",
+   "name": "Carbs of the Huge Manatee - Online Dating Expansion 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Carbs of the Huge Manatee",
+   "file": "Third-Party/Carbs of the Huge Manatee/Carbs of the Huge Manatee - Online Dating Expansion 1.json",
+   "black": 22,
+   "white": 93
+  },
+  {
+   "id": "p089",
+   "name": "Carbs of the Huge Manatee: Dance Expansion 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Carbs of the Huge Manatee",
+   "file": "Third-Party/Carbs of the Huge Manatee/Carbs of the Huge Manatee Dance Expansion 1.json",
+   "black": 18,
+   "white": 90
+  },
+  {
+   "id": "p090",
+   "name": "Carbs of the Huge Manatee: General Expansion 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Carbs of the Huge Manatee",
+   "file": "Third-Party/Carbs of the Huge Manatee/Carbs of the Huge Manatee General Expansion 1.json",
+   "black": 22,
+   "white": 92
+  },
+  {
+   "id": "p091",
+   "name": "Carbs of the Huge Manatee: General Expansion 2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Carbs of the Huge Manatee",
+   "file": "Third-Party/Carbs of the Huge Manatee/Carbs of the Huge Manatee General Expansion 2.json",
+   "black": 18,
+   "white": 90
+  },
+  {
+   "id": "p092",
+   "name": "Carbs of the Huge Manatee: General Expansion 3",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Carbs of the Huge Manatee",
+   "file": "Third-Party/Carbs of the Huge Manatee/Carbs of the Huge Manatee General Expansion 3.json",
+   "black": 18,
+   "white": 90
+  },
+  {
+   "id": "p093",
+   "name": "Cards About Toronto",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Cards About Toronto.json",
+   "black": 40,
+   "white": 198
+  },
+  {
+   "id": "p094",
+   "name": "Cards Against Profanity",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Cards Against Profanity.json",
+   "black": 77,
+   "white": 425
+  },
+  {
+   "id": "p095",
+   "name": "Cards Against/For South Africa",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Cards AgainstFor South Africa.json",
+   "black": 108,
+   "white": 360
+  },
+  {
+   "id": "p096",
+   "name": "Cards With No Sexuality",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Cards With No Sexuality.json",
+   "black": 25,
+   "white": 75
+  },
+  {
+   "id": "p097",
+   "name": "Cards and Punishment Vol. One",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cards and Punishment",
+   "file": "Third-Party/Cards and Punishment/Cards and Punishment Vol. One.json",
+   "black": 39,
+   "white": 94
+  },
+  {
+   "id": "p098",
+   "name": "Cards and Punishment Vol. Two",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cards and Punishment",
+   "file": "Third-Party/Cards and Punishment/Cards and Punishment Vol. Two.json",
+   "black": 33,
+   "white": 77
+  },
+  {
+   "id": "p099",
+   "name": "Cards for the Masses",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Cards for the Masses.json",
+   "black": 110,
+   "white": 110
+  },
+  {
+   "id": "p100",
+   "name": "Carps & Angsty Manatee - Texas Edition",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Carbs of the Huge Manatee",
+   "file": "Third-Party/Carbs of the Huge Manatee/Carps & Angsty Manatee - Texas Edition.json",
+   "black": 25,
+   "white": 124
+  },
+  {
+   "id": "p101",
+   "name": "Carps & Angsty Manatee - Volume 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Carbs of the Huge Manatee",
+   "file": "Third-Party/Carbs of the Huge Manatee/Carps & Angsty Manatee - Volume 1.json",
+   "black": 20,
+   "white": 130
+  },
+  {
+   "id": "p102",
+   "name": "Carps & Angsty Manatee - Volume 2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Carbs of the Huge Manatee",
+   "file": "Third-Party/Carbs of the Huge Manatee/Carps & Angsty Manatee - Volume 2.json",
+   "black": 22,
+   "white": 126
+  },
+  {
+   "id": "p103",
+   "name": "Cats Abiding Horribly Bonus Cards",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cats Abiding Horribly",
+   "file": "Third-Party/Cats Abiding Horribly/Cats Abiding Horribly Bonus Cards.json",
+   "black": 5,
+   "white": 5
+  },
+  {
+   "id": "p104",
+   "name": "Cats Abiding Horribly Bonus Cards 2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cats Abiding Horribly",
+   "file": "Third-Party/Cats Abiding Horribly/Cats Abiding Horribly Bonus Cards 2.json",
+   "black": 5,
+   "white": 5
+  },
+  {
+   "id": "p105",
+   "name": "Cats Abiding Horribly: Episode I - The Dirty Goblin",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cats Abiding Horribly",
+   "file": "Third-Party/Cats Abiding Horribly/Cats Abiding Horribly Episode I - The Dirty Goblin.json",
+   "black": 65,
+   "white": 140
+  },
+  {
+   "id": "p106",
+   "name": "Cats Abiding Horribly: Episode II - A New Low",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cats Abiding Horribly",
+   "file": "Third-Party/Cats Abiding Horribly/Cats Abiding Horribly Episode II - A New Low.json",
+   "black": 40,
+   "white": 110
+  },
+  {
+   "id": "p107",
+   "name": "Cats Abiding Horribly: Episode III - The SJWs Strike Back",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cats Abiding Horribly",
+   "file": "Third-Party/Cats Abiding Horribly/Cats Abiding Horribly Episode III - The SJWs Strike Back.json",
+   "black": 40,
+   "white": 110
+  },
+  {
+   "id": "p108",
+   "name": "Charlie Foxtrot",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Charlie Foxtrot.json",
+   "black": 65,
+   "white": 205
+  },
+  {
+   "id": "p109",
+   "name": "Clams Attempt Harmonica, Volume 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Clams Attempt Harmonica, Volume 1.json",
+   "black": 30,
+   "white": 78
+  },
+  {
+   "id": "p110",
+   "name": "Clones Attack Hilarity #1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Clones Attack Hilarity",
+   "file": "Third-Party/Clones Attack Hilarity/Clones Attack Hilarity #1.json",
+   "black": 38,
+   "white": 112
+  },
+  {
+   "id": "p111",
+   "name": "Clones Attack Hilarity #2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Clones Attack Hilarity",
+   "file": "Third-Party/Clones Attack Hilarity/Clones Attack Hilarity #2.json",
+   "black": 40,
+   "white": 110
+  },
+  {
+   "id": "p112",
+   "name": "Cocks Abreast Hostility - Cock Pack Two: Fowls Deep",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cocks Abreast Hostility",
+   "file": "Third-Party/Cocks Abreast Hostility/Cocks Abreast Hostility - Cock Pack Two Fowls Deep.json",
+   "black": 25,
+   "white": 100
+  },
+  {
+   "id": "p113",
+   "name": "Cocks Abreast Hostility: Cock Pack One: Just The Tip",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cocks Abreast Hostility",
+   "file": "Third-Party/Cocks Abreast Hostility/Cocks Abreast Hostility Cock Pack One Just The Tip.json",
+   "black": 25,
+   "white": 100
+  },
+  {
+   "id": "p114",
+   "name": "Cols Against Kentucky 2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cols Against Kentucky",
+   "file": "Third-Party/Cols Against Kentucky/Cols Against Kentucky 2.json",
+   "black": 9,
+   "white": 27
+  },
+  {
+   "id": "p115",
+   "name": "Cols Despite Kentucky",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cols Against Kentucky",
+   "file": "Third-Party/Cols Against Kentucky/Cols Despite Kentucky.json",
+   "black": 0,
+   "white": 18
+  },
+  {
+   "id": "p116",
+   "name": "Conspiracy Theory",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Conspiracy Theory",
+   "file": "Third-Party/Conspiracy Theory/Conspiracy Theory.json",
+   "black": 70,
+   "white": 468
+  },
+  {
+   "id": "p117",
+   "name": "Conspiracy Theory - Kickstarter Bonus Cards Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Conspiracy Theory",
+   "file": "Third-Party/Conspiracy Theory/Conspiracy Theory - Kickstarter Bonus Cards Pack.json",
+   "black": 4,
+   "white": 11
+  },
+  {
+   "id": "p118",
+   "name": "Cows Against Hamburgers - Patty Pack #1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cows Against Hamburgers",
+   "file": "Third-Party/Cows Against Hamburgers/Cows Against Hamburgers - Patty Pack #1.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p119",
+   "name": "Cows Grilling Hamburgers - Patty Pack #1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Cows Against Hamburgers",
+   "file": "Third-Party/Cows Against Hamburgers/Cows Grilling Hamburgers - Patty Pack #1.json",
+   "black": 42,
+   "white": 125
+  },
+  {
+   "id": "p120",
+   "name": "Crabs Adjust Humidity: Volume 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Crabs Adjust Humidity",
+   "file": "Third-Party/Crabs Adjust Humidity/Crabs Adjust Humidity Volume 1.json",
+   "black": 33,
+   "white": 87
+  },
+  {
+   "id": "p121",
+   "name": "Crabs Adjust Humidity: Volume 2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Crabs Adjust Humidity",
+   "file": "Third-Party/Crabs Adjust Humidity/Crabs Adjust Humidity Volume 2.json",
+   "black": 33,
+   "white": 93
+  },
+  {
+   "id": "p122",
+   "name": "Crabs Adjust Humidity: Volume 3",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Crabs Adjust Humidity",
+   "file": "Third-Party/Crabs Adjust Humidity/Crabs Adjust Humidity Volume 3.json",
+   "black": 34,
+   "white": 83
+  },
+  {
+   "id": "p123",
+   "name": "Crabs Adjust Humidity: Volume 4",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Crabs Adjust Humidity",
+   "file": "Third-Party/Crabs Adjust Humidity/Crabs Adjust Humidity Volume 4.json",
+   "black": 32,
+   "white": 80
+  },
+  {
+   "id": "p124",
+   "name": "Crabs Adjust Humidity: Volume 5",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Crabs Adjust Humidity",
+   "file": "Third-Party/Crabs Adjust Humidity/Crabs Adjust Humidity Volume 5.json",
+   "black": 32,
+   "white": 80
+  },
+  {
+   "id": "p125",
+   "name": "Crabs Adjust Humidity: Volume 6",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Crabs Adjust Humidity",
+   "file": "Third-Party/Crabs Adjust Humidity/Crabs Adjust Humidity Volume 6.json",
+   "black": 32,
+   "white": 80
+  },
+  {
+   "id": "p126",
+   "name": "Crabs Adjust Humidity: Volume 7",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Crabs Adjust Humidity",
+   "file": "Third-Party/Crabs Adjust Humidity/Crabs Adjust Humidity Volume 7.json",
+   "black": 32,
+   "white": 80
+  },
+  {
+   "id": "p127",
+   "name": "Crazy & Horrible Rabbit - Vol. 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Crazy & Horrible Rabbit - Vol. 1.json",
+   "black": 32,
+   "white": 80
+  },
+  {
+   "id": "p128",
+   "name": "Crows Adopt Vulgarity, Vol. 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Crows Adopt Vulgarity",
+   "file": "Third-Party/Crows Adopt Vulgarity/Crows Adopt Vulgarity, Vol. 1.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p129",
+   "name": "Crows Adopt Vulgarity, Vol. 2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Crows Adopt Vulgarity",
+   "file": "Third-Party/Crows Adopt Vulgarity/Crows Adopt Vulgarity, Vol. 2.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p130",
+   "name": "Crows Adopt Vulgarity, Vol. 3",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Crows Adopt Vulgarity",
+   "file": "Third-Party/Crows Adopt Vulgarity/Crows Adopt Vulgarity, Vol. 3.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p131",
+   "name": "Crows Adopt Vulgarity, Vol. 4",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Crows Adopt Vulgarity",
+   "file": "Third-Party/Crows Adopt Vulgarity/Crows Adopt Vulgarity, Vol. 4.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p132",
+   "name": "Depravity",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Depravity.json",
+   "black": 99,
+   "white": 432
+  },
+  {
+   "id": "p133",
+   "name": "Dick",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Dick.json",
+   "black": 100,
+   "white": 375
+  },
+  {
+   "id": "p134",
+   "name": "Dirty Nasty Filthy",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Dirty Nasty Filthy.json",
+   "black": 142,
+   "white": 303
+  },
+  {
+   "id": "p135",
+   "name": "Disgruntled Decks: Air Force Edition",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Disgruntled Decks",
+   "file": "Third-Party/Disgruntled Decks/Disgruntled Decks Air Force Edition.json",
+   "black": 90,
+   "white": 305
+  },
+  {
+   "id": "p136",
+   "name": "Disgruntled Decks: Army Edition",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Disgruntled Decks",
+   "file": "Third-Party/Disgruntled Decks/Disgruntled Decks Army Edition.json",
+   "black": 90,
+   "white": 305
+  },
+  {
+   "id": "p137",
+   "name": "Disgruntled Decks: Coast Guard/Coastie Edition",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Disgruntled Decks",
+   "file": "Third-Party/Disgruntled Decks/Disgruntled Decks Coast GuardCoastie Edition.json",
+   "black": 40,
+   "white": 110
+  },
+  {
+   "id": "p138",
+   "name": "Disgruntled Decks: Marine Corps/Jarhead Edition",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Disgruntled Decks",
+   "file": "Third-Party/Disgruntled Decks/Disgruntled Decks Marine CorpsJarhead Edition.json",
+   "black": 88,
+   "white": 303
+  },
+  {
+   "id": "p139",
+   "name": "Disgruntled Decks: Navy Edition",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Disgruntled Decks",
+   "file": "Third-Party/Disgruntled Decks/Disgruntled Decks Navy Edition.json",
+   "black": 90,
+   "white": 305
+  },
+  {
+   "id": "p140",
+   "name": "Evil Apples",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Evil Apples.json",
+   "black": 100,
+   "white": 399
+  },
+  {
+   "id": "p141",
+   "name": "Fun in the Oven",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Fun in the Oven.json",
+   "black": 40,
+   "white": 259
+  },
+  {
+   "id": "p142",
+   "name": "Guards Against Insanity, Edition 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Guards Against Insanity",
+   "file": "Third-Party/Guards Against Insanity/Guards Against Insanity, Edition 1.json",
+   "black": 32,
+   "white": 80
+  },
+  {
+   "id": "p143",
+   "name": "Guards Against Insanity, Edition 2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Guards Against Insanity",
+   "file": "Third-Party/Guards Against Insanity/Guards Against Insanity, Edition 2.json",
+   "black": 22,
+   "white": 90
+  },
+  {
+   "id": "p144",
+   "name": "Guards Against Insanity, Edition 3",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Guards Against Insanity",
+   "file": "Third-Party/Guards Against Insanity/Guards Against Insanity, Edition 3.json",
+   "black": 22,
+   "white": 90
+  },
+  {
+   "id": "p145",
+   "name": "Guards Against Insanity, Edition 4",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Guards Against Insanity",
+   "file": "Third-Party/Guards Against Insanity/Guards Against Insanity, Edition 4.json",
+   "black": 22,
+   "white": 90
+  },
+  {
+   "id": "p146",
+   "name": "Guards Against Insanity, Edition 5",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Guards Against Insanity",
+   "file": "Third-Party/Guards Against Insanity/Guards Against Insanity, Edition 5.json",
+   "black": 22,
+   "white": 90
+  },
+  {
+   "id": "p147",
+   "name": "Hanukkah LOL Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Hanukkah LOL Pack.json",
+   "black": 0,
+   "white": 7
+  },
+  {
+   "id": "p148",
+   "name": "Hidden Compartment Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Hidden Compartment Pack.json",
+   "black": 0,
+   "white": 15
+  },
+  {
+   "id": "p149",
+   "name": "Hilarious!",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Hilarious!.json",
+   "black": 130,
+   "white": 540
+  },
+  {
+   "id": "p150",
+   "name": "Humanity Hates The Holidays",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Humanity Hates The Holidays",
+   "file": "Third-Party/Humanity Hates The Holidays/Humanity Hates The Holidays.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p151",
+   "name": "Humanity Hates Trump: Base Set",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Humanity Hates Trump",
+   "file": "Third-Party/Humanity Hates Trump/Humanity Hates Trump Base Set.json",
+   "black": 50,
+   "white": 200
+  },
+  {
+   "id": "p152",
+   "name": "Humanity Hates Trump: Expansion Pack 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Humanity Hates Trump",
+   "file": "Third-Party/Humanity Hates Trump/Humanity Hates Trump Expansion Pack 1.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p153",
+   "name": "Humanity Hates Trump: Expansion Pack 2 - Humanity Hates Hillary, Too",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Humanity Hates Trump",
+   "file": "Third-Party/Humanity Hates Trump/Humanity Hates Trump Expansion Pack 2 - Humanity Hates Hillary, Too.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p154",
+   "name": "Humanity Hates Trump: Kickstarter Promo Cards",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Humanity Hates Trump",
+   "file": "Third-Party/Humanity Hates Trump/Humanity Hates Trump Kickstarter Promo Cards.json",
+   "black": 0,
+   "white": 5
+  },
+  {
+   "id": "p155",
+   "name": "Humanity Hates the Holidays \"Love\" Edition",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Humanity Hates The Holidays",
+   "file": "Third-Party/Humanity Hates The Holidays/Humanity Hates the Holidays Love Edition.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p156",
+   "name": "JadedAid: A Card Game to Save Humanitarians",
+   "official": false,
+   "category": "Third-Party",
+   "group": "JadedAid",
+   "file": "Third-Party/JadedAid/JadedAid A Card Game to Save Humanitarians.json",
+   "black": 35,
+   "white": 159
+  },
+  {
+   "id": "p157",
+   "name": "JadedAid: Peace Corps Expansion Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "JadedAid",
+   "file": "Third-Party/JadedAid/JadedAid Peace Corps Expansion Pack.json",
+   "black": 10,
+   "white": 46
+  },
+  {
+   "id": "p158",
+   "name": "Kids Against Maturity",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Kids Against Maturity.json",
+   "black": 151,
+   "white": 272
+  },
+  {
+   "id": "p159",
+   "name": "Kids Create Absurdity",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Kids Create Absurdity.json",
+   "black": 100,
+   "white": 350
+  },
+  {
+   "id": "p160",
+   "name": "KinderPerfect (Commercial Set)",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/KinderPerfect (Commercial Set).json",
+   "black": 70,
+   "white": 324
+  },
+  {
+   "id": "p161",
+   "name": "KinderPerfect: A Timeout For Parents (Kickstarter Set)",
+   "official": false,
+   "category": "Third-Party",
+   "group": "KinderPerfect",
+   "file": "Third-Party/KinderPerfect/KinderPerfect A Timeout For Parents (Kickstarter Set).json",
+   "black": 22,
+   "white": 172
+  },
+  {
+   "id": "p162",
+   "name": "KinderPerfect: More Expansion Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "KinderPerfect",
+   "file": "Third-Party/KinderPerfect/KinderPerfect More Expansion Pack.json",
+   "black": 25,
+   "white": 75
+  },
+  {
+   "id": "p163",
+   "name": "KinderPerfect: Naughty Expansion Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "KinderPerfect",
+   "file": "Third-Party/KinderPerfect/KinderPerfect Naughty Expansion Pack.json",
+   "black": 25,
+   "white": 75
+  },
+  {
+   "id": "p164",
+   "name": "KinderPerfect: Tween Expansion Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "KinderPerfect",
+   "file": "Third-Party/KinderPerfect/KinderPerfect Tween Expansion Pack.json",
+   "black": 24,
+   "white": 75
+  },
+  {
+   "id": "p165",
+   "name": "Kiwis Against Morality",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Kiwis Against Morality",
+   "file": "Third-Party/Kiwis Against Morality/Kiwis Against Morality.json",
+   "black": 50,
+   "white": 298
+  },
+  {
+   "id": "p166",
+   "name": "Kiwis Versus Morality",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Kiwis Against Morality",
+   "file": "Third-Party/Kiwis Against Morality/Kiwis Versus Morality.json",
+   "black": 95,
+   "white": 393
+  },
+  {
+   "id": "p167",
+   "name": "Knitters Against Swatches First Edition",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Knitters Against Swatches First Edition.json",
+   "black": 6,
+   "white": 30
+  },
+  {
+   "id": "p168",
+   "name": "Knitters Against Swatches Second Edition",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Knitters Against Swatches Second Edition.json",
+   "black": 8,
+   "white": 28
+  },
+  {
+   "id": "p169",
+   "name": "Not Parent Approved",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Not Parent Approved",
+   "file": "Third-Party/Not Parent Approved/Not Parent Approved.json",
+   "black": 100,
+   "white": 340
+  },
+  {
+   "id": "p170",
+   "name": "Not Parent Approved Expansion Pack #1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Not Parent Approved",
+   "file": "Third-Party/Not Parent Approved/Not Parent Approved Expansion Pack #1.json",
+   "black": 20,
+   "white": 60
+  },
+  {
+   "id": "p171",
+   "name": "Not Parent Approved Expansion Pack #2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Not Parent Approved",
+   "file": "Third-Party/Not Parent Approved/Not Parent Approved Expansion Pack #2.json",
+   "black": 20,
+   "white": 60
+  },
+  {
+   "id": "p172",
+   "name": "Pax East 2013 Promo Pack A",
+   "official": true,
+   "category": "Official",
+   "group": "Themed Packs",
+   "file": "Official/Themed Packs/Pax East 2013 Promo Pack A.json",
+   "black": 0,
+   "white": 8
+  },
+  {
+   "id": "p173",
+   "name": "Personally Incorrect",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Personally Incorrect",
+   "file": "Third-Party/Personally Incorrect/Personally Incorrect.json",
+   "black": 98,
+   "white": 291
+  },
+  {
+   "id": "p174",
+   "name": "Personally Incorrect - Expansion 2 [Yellow Box]",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Personally Incorrect",
+   "file": "Third-Party/Personally Incorrect/Personally Incorrect - Expansion 2 [Yellow Box].json",
+   "black": 35,
+   "white": 90
+  },
+  {
+   "id": "p175",
+   "name": "Personally Incorrect - Expansion [Red Box]",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Personally Incorrect",
+   "file": "Third-Party/Personally Incorrect/Personally Incorrect - Expansion [Red Box].json",
+   "black": 29,
+   "white": 96
+  },
+  {
+   "id": "p176",
+   "name": "Pigs Against Profanity: Volume 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Pigs Against Profanity",
+   "file": "Third-Party/Pigs Against Profanity/Pigs Against Profanity Volume 1.json",
+   "black": 31,
+   "white": 80
+  },
+  {
+   "id": "p177",
+   "name": "Pigs Against Profanity: Volume 2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Pigs Against Profanity",
+   "file": "Third-Party/Pigs Against Profanity/Pigs Against Profanity Volume 2.json",
+   "black": 30,
+   "white": 79
+  },
+  {
+   "id": "p178",
+   "name": "Pigs Against Profanity: Volume 3",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Pigs Against Profanity",
+   "file": "Third-Party/Pigs Against Profanity/Pigs Against Profanity Volume 3.json",
+   "black": 32,
+   "white": 79
+  },
+  {
+   "id": "p179",
+   "name": "Potheads Against Sanity",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Potheads Against Sanity.json",
+   "black": 96,
+   "white": 103
+  },
+  {
+   "id": "p180",
+   "name": "Rotten Apples: The Tasteless Adult Party Game",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Rotten Apples The Tasteless Adult Party Game.json",
+   "black": 130,
+   "white": 454
+  },
+  {
+   "id": "p181",
+   "name": "Skewered And Roasted",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/Skewered And Roasted.json",
+   "black": 101,
+   "white": 480
+  },
+  {
+   "id": "p182",
+   "name": "That's What She Said Game",
+   "official": false,
+   "category": "Third-Party",
+   "group": "That's What She Said",
+   "file": "Third-Party/That's What She Said/That's What She Said Game.json",
+   "black": 58,
+   "white": 400
+  },
+  {
+   "id": "p183",
+   "name": "That's What She Said Game - First Expansion",
+   "official": false,
+   "category": "Third-Party",
+   "group": "That's What She Said",
+   "file": "Third-Party/That's What She Said/That's What She Said Game - First Expansion.json",
+   "black": 50,
+   "white": 50
+  },
+  {
+   "id": "p184",
+   "name": "That's What She Said Game - Second Expansion",
+   "official": false,
+   "category": "Third-Party",
+   "group": "That's What She Said",
+   "file": "Third-Party/That's What She Said/That's What She Said Game - Second Expansion.json",
+   "black": 30,
+   "white": 70
+  },
+  {
+   "id": "p185",
+   "name": "The Catholic Card Game: Base Deck",
+   "official": false,
+   "category": "Third-Party",
+   "group": "The Catholic Card Game",
+   "file": "Third-Party/The Catholic Card Game/The Catholic Card Game Base Deck.json",
+   "black": 81,
+   "white": 400
+  },
+  {
+   "id": "p186",
+   "name": "The Catholic Card Game: Five Deck Expansion Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "The Catholic Card Game",
+   "file": "Third-Party/The Catholic Card Game/The Catholic Card Game Five Deck Expansion Pack.json",
+   "black": 41,
+   "white": 174
+  },
+  {
+   "id": "p187",
+   "name": "The Catholic Card Game: Generations Expansion Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "The Catholic Card Game",
+   "file": "Third-Party/The Catholic Card Game/The Catholic Card Game Generations Expansion Pack.json",
+   "black": 12,
+   "white": 42
+  },
+  {
+   "id": "p188",
+   "name": "The Catholic Card Game: Life Teen Expansion Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "The Catholic Card Game",
+   "file": "Third-Party/The Catholic Card Game/The Catholic Card Game Life Teen Expansion Pack.json",
+   "black": 9,
+   "white": 45
+  },
+  {
+   "id": "p189",
+   "name": "The Game Without Decency",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/The Game Without Decency.json",
+   "black": 150,
+   "white": 359
+  },
+  {
+   "id": "p190",
+   "name": "The Worst Card Game: 2016 National Edition",
+   "official": false,
+   "category": "Third-Party",
+   "group": "The Worst Card Game",
+   "file": "Third-Party/The Worst Card Game/The Worst Card Game 2016 National Edition.json",
+   "black": 18,
+   "white": 89
+  },
+  {
+   "id": "p191",
+   "name": "The Worst Card Game: Colorado Edition",
+   "official": false,
+   "category": "Third-Party",
+   "group": "The Worst Card Game",
+   "file": "Third-Party/The Worst Card Game/The Worst Card Game Colorado Edition.json",
+   "black": 36,
+   "white": 72
+  },
+  {
+   "id": "p192",
+   "name": "Trumped UpCards: Alternative Facts Expansion Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Trumped UpCards",
+   "file": "Third-Party/Trumped UpCards/Trumped UpCards Alternative Facts Expansion Pack.json",
+   "black": 9,
+   "white": 39
+  },
+  {
+   "id": "p193",
+   "name": "Trumped UpCards: Astonishlingly Excellent Wealthcare! Expansion Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Trumped UpCards",
+   "file": "Third-Party/Trumped UpCards/Trumped UpCards Astonishlingly Excellent Wealthcare! Expansion Pack.json",
+   "black": 12,
+   "white": 43
+  },
+  {
+   "id": "p194",
+   "name": "Trumped UpCards: Many Sides  Expansion Pack",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Trumped UpCards",
+   "file": "Third-Party/Trumped UpCards/Trumped UpCards Many Sides Expansion Pack.json",
+   "black": 12,
+   "white": 39
+  },
+  {
+   "id": "p195",
+   "name": "Trumped UpCards: The World's Biggest Deck*",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Trumped UpCards",
+   "file": "Third-Party/Trumped UpCards/Trumped UpCards The World's Biggest Deck.json",
+   "black": 90,
+   "white": 459
+  },
+  {
+   "id": "p196",
+   "name": "Voter's Choice: The First Expansion",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Voter's Choice",
+   "file": "Third-Party/Voter's Choice/Voter's Choice The First Expansion.json",
+   "black": 8,
+   "white": 20
+  },
+  {
+   "id": "p197",
+   "name": "Voter's Choice: The Fourth Expansion",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Voter's Choice",
+   "file": "Third-Party/Voter's Choice/Voter's Choice The Fourth Expansion.json",
+   "black": 12,
+   "white": 22
+  },
+  {
+   "id": "p198",
+   "name": "Voter's Choice: The Second Expansion",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Voter's Choice",
+   "file": "Third-Party/Voter's Choice/Voter's Choice The Second Expansion.json",
+   "black": 15,
+   "white": 20
+  },
+  {
+   "id": "p199",
+   "name": "Voter's Choice: The Third Expansion",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Voter's Choice",
+   "file": "Third-Party/Voter's Choice/Voter's Choice The Third Expansion.json",
+   "black": 11,
+   "white": 22
+  },
+  {
+   "id": "p200",
+   "name": "WTF Did You Say?!?",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Other Third-Party Games",
+   "file": "Third-Party/Other Third-Party Games/WTF Did You Say!.json",
+   "black": 100,
+   "white": 476
+  },
+  {
+   "id": "p201",
+   "name": "Words Against Morality: Volume 1",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Words Against Morality",
+   "file": "Third-Party/Words Against Morality/Words Against Morality Volume 1.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p202",
+   "name": "Words Against Morality: Volume 2",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Words Against Morality",
+   "file": "Third-Party/Words Against Morality/Words Against Morality Volume 2.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p203",
+   "name": "Words Against Morality: Volume 3",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Words Against Morality",
+   "file": "Third-Party/Words Against Morality/Words Against Morality Volume 3.json",
+   "black": 30,
+   "white": 80
+  },
+  {
+   "id": "p204",
+   "name": "Words Against Morality: Volume 4",
+   "official": false,
+   "category": "Third-Party",
+   "group": "Words Against Morality",
+   "file": "Third-Party/Words Against Morality/Words Against Morality Volume 4.json",
+   "black": 30,
+   "white": 80
+  }
+ ]
+}
