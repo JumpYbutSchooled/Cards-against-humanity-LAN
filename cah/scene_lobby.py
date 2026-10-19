@@ -130,7 +130,7 @@ class LobbyScene(Scene):
             ui.draw_text(surf, "Connecting...", 24, GRAY, (640, 360))
             return
         host_p = next((p for p in v["players"] if p["host"]), None)
-        title = "Your LAN game" if self.host else f"{host_p['name'] if host_p else 'Host'}'s game"
+        title = "Your game" if self.host else f"{host_p['name'] if host_p else 'Host'}'s game"
         ui.draw_text(surf, title, 40, WHITE, (40, 22), "topleft")
         sub = ("Waiting for players to join. Start when everyone's in." if self.host else
                "You're in! Waiting for the host to start the game" + "." * (1 + int(self.t * 2) % 3))
@@ -177,15 +177,22 @@ class LobbyScene(Scene):
                      15, GRAY, (800, 370), "midleft", bold=False)
         self.packs_btn.draw(surf)
         if self.host:
-            ui.draw_text(surf, "How friends join", 17, WHITE, (800, 490), "midleft")
-            ui.draw_text(surf, "Main menu > LAN Game - this game appears there.", 14, GRAY, (800, 516), "midleft",
-                         bold=False)
-            ui.draw_text(surf, "If it doesn't, they can type your address:", 14, GRAY, (800, 538), "midleft",
-                         bold=False)
-            port = self.session.server.port
-            suffix = "" if port == GAME_PORT else f":{port}"
-            addr = (self.ips[0] + suffix) if self.ips else "(no network found)"
-            ui.draw_text(surf, addr, 26, ACCENT, (800, 576), "midleft")
+            srv = self.session.server
+            relay = srv.relay
+            ui.draw_text(surf, "How friends join", 17, WHITE, (800, 482), "midleft")
+            if relay and relay.status == "online":
+                ui.draw_text(surf, "Multiplayer > type this room code:", 14, GRAY, (800, 508), "midleft", bold=False)
+                ui.draw_text(surf, " ".join(relay.code), 44, ACCENT, (800, 552), "midleft")
+            elif relay and relay.status == "connecting":
+                dots = "." * (1 + int(self.t * 2) % 3)
+                ui.draw_text(surf, f"Getting a room code{dots}", 18, GRAY, (800, 540), "midleft", bold=False)
+            else:
+                msg = "Online play unavailable - check the internet." if relay else "Online play not set up."
+                ui.draw_text(surf, msg, 14, RED, (800, 508), "midleft", bold=False)
+            if srv.port and self.ips:
+                suffix = "" if srv.port == GAME_PORT else f":{srv.port}"
+                ui.draw_text(surf, f"Same home network? LAN address: {self.ips[0]}{suffix}", 13, DIM, (800, 604),
+                             "midleft", bold=False)
         else:
             ui.draw_text(surf, "The host picks the packs and rules.", 14, DIM, (800, 420), "midleft", bold=False)
 

@@ -24,7 +24,8 @@ class MenuScene(Scene):
         x = 112
         self.play = Button((x, 356, 320, 60), "Play Local", self.on_play, "primary", 24,
                            sub="one computer, pass it around")
-        self.lan = Button((x, 426, 320, 60), "LAN Game", self.on_lan, "primary", 24, sub="host or join on your network")
+        self.lan = Button((x, 426, 320, 60), "Multiplayer", self.on_lan, "primary", 24,
+                          sub="online with a room code, or LAN")
         self.packs = Button((x, 496, 320, 60), "Card Packs", self.on_packs, "secondary", 22, sub="")
         self.quit = Button((x, 566, 320, 48), "Quit", app.quit, "ghost", 19)
         self.sound = Button((40, 664, 150, 36), "", self.toggle_sound, "ghost", 14)

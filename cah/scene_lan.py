@@ -5,37 +5,41 @@ import pygame
 
 from . import ui
 from .app import Scene
-from .net import GAME_PORT, Browser, Client, Server
+from .net import GAME_PORT, Browser, Client, Server, clean_code, relay_base
 from .session import ClientSession, HostSession
 from .ui import Button, TextInput, V, WHITE, GRAY, DIM, ACCENT, RED, PANEL_HI
 
-LIST_Y = 268
-ROW_H = 62
+LIST_Y = 404
+ROW_H = 54
 
 
 class LanScene(Scene):
+    """Multiplayer hub: host, join by room code (online relay), or join a LAN game."""
+
     def __init__(self, app, message=None):
         super().__init__(app)
         st = app.settings
         self.name = TextInput((40, 132, 360, 46), st.get("name", ""), "Your name", 18, 18,
                               on_change=lambda t: st.__setitem__("name", t))
         self.host_btn = Button((64, 420, 320, 58), "Host Game", self.host, "accent", 21)
-        self.ip = TextInput((464, 584, 520, 46), st.get("last_ip", ""), "Host IP address, e.g. 192.168.1.23", 40,
-                            17)
-        self.join_ip_btn = Button((996, 584, 220, 46), "Join", lambda: self.join(self.ip.text), "primary", 18)
+        self.code = TextInput((472, 268, 440, 62), "", "ROOM CODE", 8, 30)
+        self.join_code_btn = Button((926, 268, 290, 62), "Join", self.join_code, "accent", 22)
+        self.ip = TextInput((574, 588, 410, 40), st.get("last_ip", ""), "IP address, e.g. 192.168.1.23", 40, 15)
+        self.join_ip_btn = Button((996, 588, 220, 40), "Join by IP", lambda: self.join(self.ip.text), "secondary",
+                                  15)
         self.back = Button((40, 654, 160, 50), "Back", self.go_back, "ghost", 18)
-        self.fixed = self.buttons(self.host_btn, self.join_ip_btn, self.back)
+        self.fixed = self.buttons(self.host_btn, self.join_code_btn, self.join_ip_btn, self.back)
         self.browser = Browser()
         self.game_btns = {}
         self.games = []
         self.error = message
-        self.connecting = None  # (thread result holder)
+        self.connecting = None
         self.t = 0.0
+        self.online = relay_base() is not None
 
     # ---------------------------------------------------------- actions
     def player_name(self):
-        n = self.name.text.strip()
-        return n or "Player"
+        return self.name.text.strip() or "Player"
 
     def go_back(self):
         self.browser.close()
@@ -46,7 +50,7 @@ class LanScene(Scene):
         if self.connecting:
             return
         try:
-            server = Server(self.app.library, self.player_name(), self.app.settings)
+            server = Server(self.app.library, self.player_name(), self.app.settings, online=self.online)
         except OSError as e:
             self.error = f"Couldn't start hosting: {e}"
             return
@@ -55,11 +59,20 @@ class LanScene(Scene):
         from .scene_lobby import LobbyScene
         self.app.switch(LobbyScene(self.app, HostSession(server)))
 
-    def join(self, address, port=None, alt=None):
+    def join_code(self):
+        code = clean_code(self.code.text)
+        if len(code) < 4:
+            self.error = "Type the 4-letter room code from the host's screen."
+            return
+        if not self.online:
+            self.error = "Online play isn't set up in this version yet."
+            return
+        self._start(code, lambda name: [lambda: Client(name, room=code)])
+
+    def join(self, address, port=None, alt=None, code=None):
         address = address.strip()
-        if not address or self.connecting:
-            if not address:
-                self.error = "Type the host's IP address first."
+        if not address:
+            self.error = "Type the host's IP address first."
             return
         if port is None:
             port = GAME_PORT
@@ -71,33 +84,48 @@ class LanScene(Scene):
                     self.error = "That address doesn't look right."
                     return
         self.app.settings["last_ip"] = address if port == GAME_PORT else f"{address}:{port}"
+
+        def attempts(name):
+            out = [lambda a=a: Client(name, host=a, port=port) for a in [address] + ([alt] if alt and alt != address
+                                                                                       else [])]
+            if code and self.online:  # LAN blocked? the same game is also reachable through the relay
+                out.append(lambda: Client(name, room=code))
+            return out
+        self._start(address, attempts)
+
+    def _start(self, label, make_attempts):
+        if self.connecting:
+            return
         self.app.save()
         self.error = None
-        holder = {"client": None, "error": None, "started": time.time(), "addr": address}
-
-        name = self.player_name()
+        holder = {"client": None, "error": None, "started": time.time(), "label": label}
+        tries = make_attempts(self.player_name())
 
         def run():
             last = None
-            for addr in [address] + ([alt] if alt and alt != address else []):
+            for attempt in tries:
                 try:
-                    holder["client"] = Client(addr, port, name)
+                    holder["client"] = attempt()
                     return
                 except OSError as e:
                     last = e
-            holder["error"] = ("Couldn't reach that host - check the IP and that you're on the same network"
-                               f" ({last}).")
+            holder["error"] = f"Couldn't connect ({last})." if last else "Couldn't connect."
         threading.Thread(target=run, daemon=True).start()
         self.connecting = holder
 
     # ---------------------------------------------------------- events
     def handle(self, ev):
-        if self.name.handle(ev) and ev.type != pygame.MOUSEBUTTONDOWN:
-            return
-        if self.ip.handle(ev) and ev.type != pygame.MOUSEBUTTONDOWN:
-            if ev.type == pygame.KEYDOWN and ev.key in (pygame.K_RETURN, pygame.K_KP_ENTER):
-                self.join(self.ip.text)
-            return
+        for inp, submit in ((self.name, None), (self.code, self.join_code), (self.ip, lambda: self.join(self.ip.text))):
+            was_focused = inp.focused
+            if inp.handle(ev) and ev.type != pygame.MOUSEBUTTONDOWN:
+                if submit and was_focused and ev.type == pygame.KEYDOWN and ev.key in (pygame.K_RETURN,
+                                                                                      pygame.K_KP_ENTER):
+                    submit()
+                return
+        if self.code.focused or self.code.text:
+            up = clean_code(self.code.text)
+            if up != self.code.text:
+                self.code.text = up
         for b in self.fixed + list(self.game_btns.values()):
             if b.handle(ev):
                 return
@@ -106,25 +134,26 @@ class LanScene(Scene):
 
     def update(self, dt):
         self.t += dt
-        self.name.update(dt)
-        self.ip.update(dt)
-        games = self.browser.list()
+        for inp in (self.name, self.code, self.ip):
+            inp.update(dt)
+        games = self.browser.list()[:3]
         keys = set()
-        for i, g in enumerate(games[:5]):
-            key = (g["ip"], g["port"])
+        for i, g in enumerate(games):
+            key = g.get("id") or (g["ip"], g["port"])
             keys.add(key)
             b = self.game_btns.get(key)
             if b is None:
-                b = Button((1080, 0, 130, 42), "Join", lambda g=g: self.join(g["ip"], g["port"], g.get("alt_ip")),
-                           "primary", 16)
+                b = Button((1096, 0, 120, 38), "Join",
+                           lambda g=g: self.join(g["ip"], g["port"], g.get("alt_ip"), g.get("code")), "primary", 15)
                 b.sounds = self.app.sounds
                 self.game_btns[key] = b
-            b.rect.y = LIST_Y + i * ROW_H + 10
-            b.enabled = g.get("v") == 1
+            b.rect.y = LIST_Y + i * ROW_H + 8
+            b.enabled = g.get("v") == 2
         for k in list(self.game_btns):
             if k not in keys:
                 del self.game_btns[k]
-        self.games = games[:5]
+        self.games = games
+        self.join_code_btn.enabled = len(clean_code(self.code.text)) >= 4 and not self.connecting
         for b in self.fixed + list(self.game_btns.values()):
             b.update(dt)
 
@@ -149,58 +178,59 @@ class LanScene(Scene):
                         from .scene_game import GameScene
                         self.app.switch(GameScene(self.app, session))
                     self.connecting = None
-                elif time.time() - c["started"] > 8:
+                elif time.time() - c["started"] > 12:
                     self.error = "The host didn't answer."
                     client.close()
                     self.connecting = None
 
     # ---------------------------------------------------------- draw
     def draw(self, surf):
-        ui.draw_text(surf, "LAN Game", 40, WHITE, (40, 22), "topleft")
-        ui.draw_text(surf, "Play together on the same Wi-Fi or home network - everyone on their own computer.", 15,
-                     GRAY, (42, 70), "topleft", bold=False)
+        ui.draw_text(surf, "Multiplayer", 40, WHITE, (40, 22), "topleft")
+        ui.draw_text(surf, "Everyone on their own computer. Room codes work on any network - school Wi-Fi, "
+                     "different houses, hotspots.", 15, GRAY, (42, 70), "topleft", bold=False)
         ui.draw_text(surf, "Your name", 14, GRAY, (42, 122), "bottomleft", bold=False)
         self.name.draw(surf)
 
         ui.draw_panel(surf, (40, 200, 384, 440))
         ui.draw_text(surf, "Host a game", 22, WHITE, (64, 232), "midleft")
-        lines = ["Start a game on this computer.", "Friends on your network can join it,",
-                 "and you can fill empty seats with bots.", "",
-                 "Windows may ask whether Python can use", "the network - choose Allow (Private)."]
+        lines = ["Start a game on this computer.", "You'll get a room code to share,", "and can fill seats with bots."]
         for i, t in enumerate(lines):
-            ui.draw_text(surf, t, 15, GRAY if i < 3 else DIM, (64, 274 + i * 22), "midleft", bold=False)
+            ui.draw_text(surf, t, 15, GRAY, (64, 278 + i * 24), "midleft", bold=False)
+        if not self.online:
+            ui.draw_text(surf, "(online play not set up - LAN only)", 13, DIM, (64, 360), "midleft", bold=False)
         self.host_btn.draw(surf)
 
         ui.draw_panel(surf, (448, 200, 792, 440))
         ui.draw_text(surf, "Join a game", 22, WHITE, (472, 232), "midleft")
+        self.code.draw(surf)
+        self.join_code_btn.draw(surf)
+
+        ui.draw_text(surf, "On the same home network", 15, WHITE, (472, 382), "midleft")
         if not self.games:
             dots = "." * (1 + int(self.t * 2) % 3)
-            ui.draw_text(surf, f"Looking for games on your network{dots}", 17, GRAY, (844, 380), bold=False)
-            if self.browser.error:
-                ui.draw_text(surf, "(Auto-discovery is unavailable - use the IP address below.)", 13, DIM,
-                             (844, 408), bold=False)
+            ui.draw_text(surf, f"No LAN games found{dots}  (school networks usually block this - use the code)", 13,
+                         DIM, (472, 420), "midleft", bold=False)
         for i, g in enumerate(self.games):
             y = LIST_Y + i * ROW_H
-            r = V.rect((464, y, 760, ROW_H - 8))
+            r = V.rect((464, y, 760, ROW_H - 6))
             surf.blit(ui.rounded_px(r.w, r.h, V.s(10), PANEL_HI), r)
-            ui.draw_text(surf, ui.ellipsize(g.get("title", "Game"), 18, 520), 18, WHITE, (484, y + 18), "midleft")
-            status = "in lobby" if g.get("phase") == "lobby" else "game in progress"
-            port = "" if g["port"] == GAME_PORT else f":{g['port']}"
-            ui.draw_text(surf, f"{g['ip']}{port}  ·  {g.get('players', 0)} players  ·  {status}", 13, GRAY,
-                         (484, y + 40), "midleft", bold=False)
-            if g.get("v") != 1:
-                ui.draw_text(surf, "different version", 13, RED, (1070, y + 27), "midright", bold=False)
+            ui.draw_text(surf, ui.ellipsize(g.get("title", "Game"), 16, 420), 16, WHITE, (482, y + 16), "midleft")
+            status = "in lobby" if g.get("phase") == "lobby" else "in progress"
+            code = f"  ·  code {g['code']}" if g.get("code") else ""
+            ui.draw_text(surf, f"{g['ip']}  ·  {g.get('players', 0)} players  ·  {status}{code}", 12, GRAY,
+                         (482, y + 35), "midleft", bold=False)
+            if g.get("v") != 2:
+                ui.draw_text(surf, "different version", 13, RED, (1084, y + 24), "midright", bold=False)
         for b in self.game_btns.values():
             b.draw(surf)
-        ui.draw_text(surf, "Not listed? Ask the host for the IP shown in their lobby:", 14, GRAY, (472, 566),
-                     "midleft", bold=False)
+        ui.draw_text(surf, "Or by IP:", 14, GRAY, (472, 608), "midleft", bold=False)
         self.ip.draw(surf)
         self.join_ip_btn.draw(surf)
 
         self.back.draw(surf)
         if self.connecting:
             dots = "." * (1 + int(self.t * 3) % 3)
-            ui.draw_text(surf, f"Connecting to {self.connecting['addr']}{dots}", 16, ACCENT, (230, 679), "midleft",
+            ui.draw_text(surf, f"Connecting to {self.connecting['label']}{dots}", 16, ACCENT, (230, 679), "midleft",
                          bold=False)
         elif self.error:
             ui.draw_text(surf, ui.ellipsize(self.error, 15, 1000, False), 15, RED, (230, 679), "midleft",

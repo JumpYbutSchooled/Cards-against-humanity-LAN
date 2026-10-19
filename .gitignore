@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 settings.json
 .update/
+relay/node_modules/
+relay/.wrangler/
+relay/package-lock.json
