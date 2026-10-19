@@ -196,29 +196,37 @@ class App:
             return
         self._fs_last = now
         self.fullscreen = not self.fullscreen
-        try:
-            from pygame._sdl2.video import Window
-            win = Window.from_display_module()
-            if self.fullscreen:
-                self.windowed_size, self.windowed_pos = win.size, win.position
-                win.set_fullscreen(desktop=True)
-            else:
-                win.set_windowed()
-                win.size = self.windowed_size
-                if self.windowed_pos:
-                    win.position = self.windowed_pos
-        except Exception:
-            # Fallback: a borderless window the size of the desktop - still no display mode change.
-            if self.fullscreen:
-                self.windowed_size = self.screen.get_size()
-                size = pygame.display.get_desktop_sizes()[0]
-                os.environ["SDL_VIDEO_WINDOW_POS"] = "0,0"
-                pygame.display.set_mode(size, pygame.NOFRAME)
-            else:
-                os.environ.pop("SDL_VIDEO_WINDOW_POS", None)
-                pygame.display.set_mode(self.windowed_size, pygame.RESIZABLE)
+        # Every size change goes through set_mode so pygame rebuilds its screen surface. (Resizing the
+        # window behind pygame's back left it drawing into freed memory -> random crashes later on.)
+        if self.fullscreen:
+            self.windowed_size = self.screen.get_size()
+            self.windowed_pos = self._window_pos()
+            size = pygame.display.get_desktop_sizes()[0]
+            pygame.display.set_mode(size, pygame.NOFRAME)
+            self._move_window((0, 0))
+        else:
+            pygame.display.set_mode(self.windowed_size, pygame.RESIZABLE)
+            if self.windowed_pos:
+                self._move_window(self.windowed_pos)
         pygame.event.clear(pygame.KEYDOWN)  # drop presses that queued up meanwhile
         self.sync_screen()
+
+    @staticmethod
+    def _window_pos():
+        try:
+            from pygame._sdl2.video import Window
+            return Window.from_display_module().position
+        except Exception:  # noqa: BLE001
+            return None
+
+    @staticmethod
+    def _move_window(pos):
+        # Moving a window never frees its surface, so this is safe to do outside set_mode.
+        try:
+            from pygame._sdl2.video import Window
+            Window.from_display_module().position = pos
+        except Exception:  # noqa: BLE001
+            pass
 
     def sync_screen(self):
         surf = pygame.display.get_surface()

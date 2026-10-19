@@ -4,6 +4,7 @@ settings.json
 .update/
 update.log
 update.log.old
+crash.log
 relay/node_modules/
 relay/.wrangler/
 relay/package-lock.json
