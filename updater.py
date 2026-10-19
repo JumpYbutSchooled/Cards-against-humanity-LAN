@@ -39,20 +39,28 @@ def is_dev_copy():
     return os.path.isdir(os.path.join(ROOT, ".git"))
 
 
-def _get(url, timeout):
-    req = urllib.request.Request(url, headers=HEADERS)
+def _get(url, timeout, extra=None):
+    req = urllib.request.Request(url, headers=dict(HEADERS, **(extra or {})))
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read()
 
 
 def remote_version(timeout=6):
-    data = _get(f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/VERSION", timeout)
+    # The API answers fresh; raw.githubusercontent.com can serve a copy up to ~5 minutes old.
+    try:
+        data = _get(f"https://api.github.com/repos/{REPO}/contents/VERSION?ref={BRANCH}", timeout,
+                    {"Accept": "application/vnd.github.raw"})
+    except Exception:
+        data = _get(f"https://raw.githubusercontent.com/{REPO}/{BRANCH}/VERSION", timeout)
     return int(data.decode("utf-8").strip())
 
 
 def download_and_stage(expected_version, timeout=60):
     """Downloads the branch ZIP and unpacks it into .update/staged."""
-    data = _get(f"https://codeload.github.com/{REPO}/zip/refs/heads/{BRANCH}", timeout)
+    try:
+        data = _get(f"https://api.github.com/repos/{REPO}/zipball/{BRANCH}", timeout)
+    except Exception:
+        data = _get(f"https://codeload.github.com/{REPO}/zip/refs/heads/{BRANCH}", timeout)
     if os.path.isdir(STAGED):
         shutil.rmtree(STAGED)
     os.makedirs(STAGED, exist_ok=True)
