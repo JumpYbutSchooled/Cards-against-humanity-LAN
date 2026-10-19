@@ -7,9 +7,9 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-python -c "import pygame" >nul 2>nul
+python -c "import pygame, pyttsx3" >nul 2>nul
 if errorlevel 1 (
-  echo First run: installing pygame...
+  echo First run: installing pygame and the robot voice...
   python -m pip install --user -r requirements.txt
 )
 python main.py

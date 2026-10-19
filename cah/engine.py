@@ -15,6 +15,7 @@ AWAY_PLAY_DELAY = 6.0
 BOT_REVEAL_GAP = 0.85
 BOT_THINK = 1.3
 RESULT_AUTO_NEXT = 6.0  # only when nobody human is around to press "next"
+COIN_TIME = 3.2  # seconds the coin spins before the point is awarded
 MIN_PLAYERS = 3
 MAX_PLAYERS = 10
 
@@ -43,6 +44,8 @@ class Engine:
         self.subs = []  # [{"pid", "cards", "revealed"}] in judging order
         self.focus = None
         self.reading = None
+        self.coin = None
+        self.tts = "off"  # robot voice: off | host | all
         self.winner = None
         self.final = False
         self.bot_due = {}
@@ -102,7 +105,9 @@ class Engine:
                 self.bot_due[pid] = self.t + AWAY_PLAY_DELAY
             self.touch()
 
-    def configure(self, packs=None, points=None, hand=None, preset=None):
+    def configure(self, packs=None, points=None, hand=None, preset=None, tts=None):
+        if tts in ("off", "host", "all"):
+            self.tts = tts
         if packs is not None:
             self.packs = list(packs)
             self.preset = preset if preset is not None else match_name(self.lib, self.packs)
@@ -193,6 +198,7 @@ class Engine:
         self.played = {}
         self.subs = []
         self.focus = None
+        self.coin = None
         self.winner = None
         self.round_pids = set(ids)
         self.set_phase("intro")
@@ -217,6 +223,10 @@ class Engine:
             if all(p["id"] in self.played for p in self.required()):
                 self._begin_judging()
         elif self.phase == "judge":
+            if self.coin is not None:
+                if self.t - self.coin["at"] >= COIN_TIME:
+                    self._award(self.coin["result"])
+                return
             czar = self.get(self.czar)
             if czar is None or self.auto(czar):
                 self._auto_judge()
@@ -235,8 +245,9 @@ class Engine:
     def _begin_judging(self):
         order = list(self.played.items())
         random.shuffle(order)
-        self.subs = [{"pid": pid, "cards": cards, "revealed": False} for pid, cards in order]
+        self.subs = [{"pid": pid, "cards": cards, "revealed": False, "out": False} for pid, cards in order]
         self.reading = None
+        self.coin = None
         self.judge_due = 2.0  # a moment to read the black card out loud first
         self.set_phase("judge")
 
@@ -301,11 +312,29 @@ class Engine:
                 return False
             self._submit(p, idxs)
             return True
-        if pid != self.czar and kind in ("reveal", "reveal_all", "focus", "award"):
+        if pid != self.czar and kind in ("reveal", "reveal_all", "focus", "award", "eliminate", "coinflip"):
             return False
+        if self.phase == "judge" and self.coin is not None:
+            return False  # the coin is in the air - nothing changes until it lands
         if self.phase == "judge":
             i = a.get("i")
-            valid = isinstance(i, int) and 0 <= i < len(self.subs)
+            valid = isinstance(i, int) and 0 <= i < len(self.subs) and not self.subs[i]["out"]
+            all_rev = all(s["revealed"] for s in self.subs)
+            left = [j for j, s in enumerate(self.subs) if not s["out"]]
+            # Elimination: knock answers out one at a time until two are left.
+            if kind == "eliminate" and valid and all_rev and len(left) > 2:
+                self.subs[i]["out"] = True
+                if self.focus == i:
+                    self.focus = None
+                if self.reading == i:
+                    self.reading = None
+                self.touch()
+                return True
+            # Down to the final two: let a coin decide.
+            if kind == "coinflip" and all_rev and len(left) == 2:
+                self.coin = {"pair": left, "result": random.choice(left), "at": self.t}
+                self.touch()
+                return True
             # "reading" is the answer the Czar is reading out right now; everyone's screen shows it in sync.
             if kind == "reveal" and valid and not self.subs[i]["revealed"]:
                 self.subs[i]["revealed"] = True
@@ -339,7 +368,8 @@ class Engine:
             for s in self.subs:
                 subs.append({"n": len(s["cards"]),
                              "cards": [_card(c) for c in s["cards"]] if s["revealed"] else None,
-                             "pid": s["pid"] if show_owner else None})
+                             "pid": s["pid"] if show_owner else None,
+                             "out": s.get("out", False)})
         b, w = self.deck_counts()
         return {
             "phase": self.phase,
@@ -356,10 +386,12 @@ class Engine:
             "subs": subs,
             "focus": self.focus,
             "reading": self.reading,
+            "coin": ({"pair": self.coin["pair"], "result": self.coin["result"]}
+                     if self.coin is not None and self.phase in ("judge", "result") else None),
             "winner": self.winner,
             "final": self.final,
             "can_next": self.can_next(pid) if pid is not None else self.local,
             "config": {"points": self.goal, "hand": self.hand_size, "packs": len(self.packs), "black": b,
-                       "white": w, "preset": self.preset},
+                       "white": w, "preset": self.preset, "tts": self.tts},
             "ver": self.version,
         }

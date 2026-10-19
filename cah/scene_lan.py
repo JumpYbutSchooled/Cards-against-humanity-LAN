@@ -5,7 +5,7 @@ import pygame
 
 from . import ui
 from .app import Scene
-from .net import GAME_PORT, Browser, Client, Server, clean_code, relay_base
+from .net import GAME_PORT, PROTOCOL, Browser, Client, Server, clean_code, relay_base
 from .session import ClientSession, HostSession
 from .ui import Button, TextInput, V, WHITE, GRAY, DIM, ACCENT, RED, PANEL_HI
 
@@ -163,7 +163,7 @@ class LanScene(Scene):
                 b.sounds = self.app.sounds
                 self.game_btns[key] = b
             b.rect.y = LIST_Y + i * ROW_H + 8
-            b.enabled = g.get("v") == 2
+            b.enabled = g.get("v") == PROTOCOL
         for k in list(self.game_btns):
             if k not in keys:
                 del self.game_btns[k]
@@ -243,7 +243,7 @@ class LanScene(Scene):
             code = f"  ·  code {g['code']}" if g.get("code") else ""
             ui.draw_text(surf, f"{g['ip']}  ·  {g.get('players', 0)} players  ·  {status}{code}", 12, GRAY,
                          (482, y + 35), "midleft", bold=False)
-            if g.get("v") != 2:
+            if g.get("v") != PROTOCOL:
                 ui.draw_text(surf, "different version", 13, RED, (1084, y + 24), "midright", bold=False)
         for b in self.game_btns.values():
             b.draw(surf)

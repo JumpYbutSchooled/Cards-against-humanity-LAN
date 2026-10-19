@@ -27,6 +27,8 @@ class SetupScene(Scene):
         self.packs_btn = Button((800, 432, 410, 46), "Customize packs...", self.on_packs, "secondary", 16)
         from .scene_packs import PresetChips
         self.chips = PresetChips(app, 800, 318, 410, self.on_preset)
+        self.voice = Segmented((1046, 114, 174, 34), ["Off", "On"], 1 if st.get("tts_local") else 0,
+                               self.on_voice, 13, app.sounds)
         self.back = Button((40, 654, 160, 50), "Back", self.on_back, "ghost", 18)
         self.start = Button((1010, 654, 230, 50), "Start Game", self.on_start, "accent", 20)
         self.fixed = self.buttons(self.add_human, self.add_bot, self.packs_btn, self.back, self.start)
@@ -104,6 +106,13 @@ class SetupScene(Scene):
             return "Each player needs a different name."
         return None
 
+    def on_voice(self, i):
+        self.app.settings["tts_local"] = i == 1
+        self.app.save()
+        if i == 1:
+            from .tts import speaker
+            speaker().say("Robot voice on.")
+
     def on_preset(self, packs, name):
         self.app.settings["packs"] = packs
         self.app.save()
@@ -132,7 +141,7 @@ class SetupScene(Scene):
         for p, inp, seg, rm in list(self.rows):
             if seg.handle(ev) or rm.handle(ev):
                 return
-        for w in self.fixed + [self.points, self.hand, self.chips]:
+        for w in self.fixed + [self.points, self.hand, self.chips, self.voice]:
             if w.handle(ev):
                 return
         if ev.type == pygame.KEYDOWN and not any(r[1].focused for r in self.rows):
@@ -145,7 +154,7 @@ class SetupScene(Scene):
         full = len(self.players) >= MAX_PLAYERS
         self.add_human.enabled = self.add_bot.enabled = not full
         self.start.enabled = self.problems() is None
-        for w in self.fixed + [self.points, self.hand]:
+        for w in self.fixed + [self.points, self.hand, self.voice]:
             w.update(dt)
         from .presets import match_name
         self.preset = match_name(self.app.library, self.app.settings["packs"], self.app.settings)
@@ -180,6 +189,8 @@ class SetupScene(Scene):
 
         ui.draw_panel(surf, (770, 100, 470, 540))
         ui.draw_text(surf, "Rules", 22, WHITE, (800, 131), "midleft")
+        ui.draw_text(surf, "Robot voice", 14, GRAY, (1036, 131), "midright", bold=False)
+        self.voice.draw(surf)
         self.points.draw(surf)
         self.hand.draw(surf)
         ui.draw_text(surf, "Card packs", 22, WHITE, (800, 296), "midleft")

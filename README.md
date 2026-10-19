@@ -44,6 +44,10 @@ You can also tick any mix of packs yourself and save it as your own preset. Clic
 
 While judging, everyone sees the card the Czar is reading at the same moment, so it can be read out loud together.
 
+**Elimination and coin flip:** once every card is flipped, the Czar can click a card and press **Eliminate** (or the X / Delete key) to knock it out. Everyone sees it stamped OUT. With two cards left, the Czar picks the winner or presses **Coin flip**. The two finalists are labelled Heads and Tails, everyone watches the same coin, and it lands on the winner.
+
+**Robot voice:** the classic Windows robot voice (`pyttsx3`) reads each black card at the start of the round, then each answer as the Czar reads it, the coin result, and the winner. The host turns it on in the lobby (Off / Host = only the host's PC talks / All = every PC talks) or from Menu during a game. Local games have an Off/On switch in setup.
+
 `assets/cards/` holds one JSON file per pack, sorted by group (`Official/Base Game/CAH Base Set.json`, `Third-Party/Crabs Adjust Humidity/...`), plus an `index.json`.
 `python tools/build_cards.py` rebuilds the folder from the latest card database.
 

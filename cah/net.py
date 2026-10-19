@@ -22,7 +22,7 @@ import time
 from .engine import Engine
 from .ws import WebSocket
 
-PROTOCOL = 2
+PROTOCOL = 3
 GAME_PORT = 47474
 DISCOVERY_PORT = 47475
 BEACON = "CAH-LAN"
@@ -316,6 +316,7 @@ class RelayHost:
 class Server:
     def __init__(self, library, host_name, settings, online=True, lan=True):
         self.engine = Engine(library, settings["packs"], settings.get("points", 7), settings.get("hand", 10))
+        self.engine.configure(tts=settings.get("tts_mode", "off"))
         self.lock = threading.RLock()
         self.host_pid = self.engine.add_player(host_name, host=True)
         self.clients = {}  # conn -> pid

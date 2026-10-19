@@ -43,6 +43,8 @@ class Group:
         self.pid = None
         self.hover = 0.0
         self.read = 0.0
+        self.out = False
+        self.outa = 0.0
         self.label_a = 0.0
         self.center = (TABLE.centerx, TABLE.centery)
         self.label_y = TABLE.centery
@@ -88,16 +90,23 @@ class GameScene(Scene):
         net, host = session.net, session.is_host
         self.action = Button((530, 346, 260, 52), "", None, "accent", 19)
         self.reveal_all = Button((462, 654, 190, 46), "Reveal all", self.do_reveal_all, "secondary", 16)
+        self.elim_btn = Button((447, 652, 200, 50), "Eliminate", self.eliminate, "danger", 18)
+        self.coin_btn = Button((447, 652, 200, 50), "Coin flip", self.coinflip, "secondary", 18)
+        self.elim_btn.visible = self.coin_btn.visible = False
+        self.coin_anim = None  # (round, pair, result, started_at) while the coin spins on screen
+        self.spoken = {}
         self.menu_btn = Button((24, 18, 96, 38), "Menu", self.toggle_pause, "ghost", 15)
         leave_label = "End game for everyone" if host else ("Leave game" if net else "Main menu")
         self.p_resume = Button((490, 0, 300, 56), "Resume", self.toggle_pause, "primary", 20)
         self.p_packs = Button((490, 0, 300, 52), "Change card packs", self.open_packs, "secondary", 18)
+        self.p_voice = Button((490, 0, 300, 52), "", self.cycle_voice, "secondary", 18)
         self.p_restart = Button((490, 0, 300, 52), "Restart game", self.restart, "secondary", 18)
         self.p_leave = Button((490, 0, 300, 52), leave_label, self.leave, "ghost", 18)
         self.p_restart.visible = not net
         self.p_packs.visible = host or not net  # the host (or a local game) controls the packs
+        self.p_voice.visible = host or not net
         y = 296
-        for b in (self.p_resume, self.p_packs, self.p_restart, self.p_leave):
+        for b in (self.p_resume, self.p_packs, self.p_voice, self.p_restart, self.p_leave):
             if b.visible:
                 b.rect.y = y
                 y += b.rect.h + 10
@@ -108,8 +117,8 @@ class GameScene(Scene):
         self.o_menu = Button((650, 560, 190, 54), "End game" if host else ("Leave" if net else "Main menu"),
                              self.leave, "secondary", 19)
         self.err_btn = Button((540, 400, 200, 52), "Back to menu", self.leave, "primary", 18)
-        self.buttons(self.action, self.reveal_all, self.menu_btn, self.p_resume, self.p_packs, self.p_restart,
-                     self.p_leave, self.o_again, self.o_menu, self.err_btn)
+        self.buttons(self.action, self.reveal_all, self.elim_btn, self.coin_btn, self.menu_btn, self.p_resume,
+                     self.p_packs, self.p_voice, self.p_restart, self.p_leave, self.o_again, self.o_menu, self.err_btn)
 
     # ================================================================ helpers
     def player(self, pid):
@@ -228,6 +237,54 @@ class GameScene(Scene):
     def toggle_pause(self):
         self.paused = not self.paused
 
+    def eliminate(self):
+        v = self.v
+        if self.is_judging() and v["focus"] is not None:
+            self.session.act(self.seat, {"a": "eliminate", "i": v["focus"], "round": v["round"]})
+            self.app.sounds.play("deselect")
+
+    def coinflip(self):
+        if self.is_judging():
+            self.session.act(self.seat, {"a": "coinflip", "round": self.v["round"]})
+
+    # ---------------------------------------------------------------- robot voice
+    VOICE_MODES = ["off", "host", "all"]
+    VOICE_LABEL = {"off": "Robot voice: Off", "host": "Robot voice: Host PC", "all": "Robot voice: Everyone"}
+
+    def voice_mode(self):
+        if self.session.local:
+            return "all" if self.app.settings.get("tts_local") else "off"
+        return (self.v or {}).get("config", {}).get("tts", "off")
+
+    def cycle_voice(self):
+        if self.session.local:
+            on = not self.app.settings.get("tts_local")
+            self.app.settings["tts_local"] = on
+            self.app.save()
+            if on:
+                self.say("Robot voice on.")
+        elif self.session.is_host:
+            modes = self.VOICE_MODES
+            nxt = modes[(modes.index(self.voice_mode()) + 1) % len(modes)]
+            self.app.settings["tts_mode"] = nxt
+            self.session.server.host(lambda e: e.configure(tts=nxt))
+            if nxt != "off":
+                self.say("Robot voice on.")
+
+    def voice_here(self):
+        mode = self.voice_mode()
+        return mode == "all" or (mode == "host" and self.session.is_host)
+
+    def say(self, text):
+        from .tts import speaker
+        speaker().say(text)
+
+    def speak_once(self, key, text):
+        """Speak each moment once (state snapshots repeat; the voice shouldn't)."""
+        if self.voice_here() and self.spoken.get(key[0]) != key:
+            self.spoken[key[0]] = key
+            self.say(text)
+
     def open_packs(self):
         """Host / local game: change packs mid-game; new cards come from the new packs from now on."""
         from .scene_packs import PacksScene
@@ -270,9 +327,24 @@ class GameScene(Scene):
                         s.tflip = 0.0
                         s.delay = j * 0.08
                 g.pid = sub["pid"]
+                g.out = bool(sub.get("out"))
                 for s in g.sprites:
-                    s.tglow = 1.0 if v["focus"] == i else 0.0
-                    s.tdim = 1.0 if (v["winner"] is not None and i != v["winner"]) else 0.0
+                    s.tglow = 1.0 if (v["focus"] == i and not g.out) else 0.0
+                    s.tdim = 1.0 if (g.out or (v["winner"] is not None and i != v["winner"])) else 0.0
+            coin = v.get("coin")
+            if coin and (self.coin_anim is None or self.coin_anim["round"] != r):
+                self.coin_anim = {"round": r, "pair": coin["pair"], "result": coin["result"], "t": 0.0,
+                                  "landed": False}
+                self.app.sounds.play("whoosh")
+                self.speak_once(("coin", r), "Coin flip!")
+            if v["phase"] == "judge" and v.get("reading") is not None:
+                sub = v["subs"][v["reading"]]
+                if sub["cards"]:
+                    segs = fill(v["black"]["t"], [c["t"] for c in sub["cards"]], 0, 0)
+                    self.speak_once(("read", r, v["reading"]), "".join(t for t, _ in segs))
+            if v["phase"] == "result" and v["winner"] is not None:
+                wp = v["subs"][v["winner"]]["pid"]
+                self.speak_once(("win", r), f"{self.name(wp, False)} wins the round!")
             if v["winner"] is not None and self.winner_seen != (r, v["winner"]):
                 self.winner_seen = (r, v["winner"])
                 self.app.sounds.play("point")
@@ -317,6 +389,8 @@ class GameScene(Scene):
         self.round_seen = v["round"]
         self.selected = []
         self.winner_seen = None
+        self.coin_anim = None
+        self.speak_once(("black", v["round"]), b["t"])
         if v["phase"] == "intro":
             czar = v["czar"]
             sub = "You're the Card Czar" if (self.session.net and czar == self.session.me) else \
@@ -454,10 +528,10 @@ class GameScene(Scene):
             gy = y0 + r * (h + label_h + gap)
             g.center = (gx + (gw - w) / 2, gy)
             g.label_y = gy + h / 2 + 14
-            lift = 6 * g.hover + 12 * g.read
+            lift = 6 * g.hover + 12 * g.read - 10 * g.outa
             for j, s in enumerate(g.sprites):
                 s.resize(w)
-                s.move(gx + j * w * 0.5, gy - lift, 1.0 + 0.03 * g.hover + 0.04 * g.read)
+                s.move(gx + j * w * 0.5, gy - lift, 1.0 + 0.03 * g.hover + 0.04 * g.read - 0.1 * g.outa)
 
     # ================================================================ effects
     def burst(self, x, y, n):
@@ -512,7 +586,7 @@ class GameScene(Scene):
                 self.o_menu.click()
             return
         if self.paused:
-            for b in (self.p_resume, self.p_packs, self.p_restart, self.p_leave):
+            for b in (self.p_resume, self.p_packs, self.p_voice, self.p_restart, self.p_leave):
                 if b.handle(ev):
                     return
             if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
@@ -521,7 +595,11 @@ class GameScene(Scene):
         if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
             self.toggle_pause()
             return
-        if self.menu_btn.handle(ev) or self.action.handle(ev) or self.reveal_all.handle(ev):
+        if self.menu_btn.handle(ev) or self.action.handle(ev) or self.reveal_all.handle(ev) or \
+                self.elim_btn.handle(ev) or self.coin_btn.handle(ev):
+            return
+        if ev.type == pygame.KEYDOWN and ev.key in (pygame.K_DELETE, pygame.K_x) and self.elim_btn.visible:
+            self.eliminate()
             return
         if v is None or self.covered():
             if ev.type == pygame.KEYDOWN and ev.key in (pygame.K_RETURN, pygame.K_KP_ENTER, pygame.K_SPACE):
@@ -554,9 +632,10 @@ class GameScene(Scene):
 
     # ================================================================ update
     def update(self, dt):
-        for b in (self.action, self.reveal_all, self.menu_btn, self.p_resume, self.p_packs, self.p_restart,
-                  self.p_leave, self.o_again, self.o_menu, self.err_btn):
+        for b in (self.action, self.reveal_all, self.elim_btn, self.coin_btn, self.menu_btn, self.p_resume,
+                  self.p_packs, self.p_voice, self.p_restart, self.p_leave, self.o_again, self.o_menu, self.err_btn):
             b.update(dt)
+        self.p_voice.label = self.VOICE_LABEL[self.voice_mode()]
         err = self.session.error and not self.session.local
         self.err_a = ui.approach(self.err_a, 1.0 if err else 0.0, 10, dt)
         self.pause_a = ui.approach(self.pause_a, 1.0 if self.paused else 0.0, 14, dt)
@@ -604,6 +683,14 @@ class GameScene(Scene):
 
         self.sync(v)
 
+        if self.coin_anim:
+            self.coin_anim["t"] += dt
+            heads, _, landed = self.coin_state()
+            if landed and not self.coin_anim["landed"]:
+                self.coin_anim["landed"] = True
+                self.app.sounds.play("flip")
+                self.speak_once(("coinres", self.coin_anim["round"]), "Heads!" if heads else "Tails!")
+
         if self.black_sprite:
             self.black_age += dt
             if self.black_sprite.tflip > 0.5 and self.black_age > 0.7:
@@ -619,6 +706,7 @@ class GameScene(Scene):
                 hov = g is self.hover_group and self.is_judging()
                 g.hover = ui.approach(g.hover, 1.0 if hov else 0.0, 14, dt)
                 g.read = ui.approach(g.read, 1.0 if i == reading else 0.0, 10, dt)
+                g.outa = ui.approach(g.outa, 1.0 if g.out else 0.0, 9, dt)
                 g.label_a = ui.approach(g.label_a, 1.0 if v["phase"] == "result" else 0.0, 6, dt)
             self.layout_groups()
 
@@ -633,6 +721,7 @@ class GameScene(Scene):
         ph = v["phase"]
         a = self.action
         self.reveal_all.visible = False
+        self.elim_btn.visible = self.coin_btn.visible = False
         a.visible = True
         a.style = "accent"
         if self.covered():
@@ -653,14 +742,25 @@ class GameScene(Scene):
             a.rect = pygame.Rect(530, 346, 260, 52)
             who = f"{self.name(self.seat, False)}, play" if self.multi_human else "Play"
             self.status = f"{who} {self.pick} card{'s' if self.pick > 1 else ''}"
+        elif self.is_judging() and v.get("coin"):
+            a.visible = False
+            self.status = "Flipping a coin..."
         elif self.is_judging():
             all_rev = all(s["cards"] is not None for s in v["subs"])
+            left = sum(1 for s in v["subs"] if not s.get("out"))
             self.reveal_all.visible = not all_rev
+            self.elim_btn.visible = all_rev and left > 2
+            self.elim_btn.enabled = v["focus"] is not None
+            self.coin_btn.visible = all_rev and left == 2
             a.label, a.callback = "Award point", self.award
             a.enabled = all_rev and v["focus"] is not None
-            a.rect = pygame.Rect(668, 652, 220, 50)
-            self.status = ("Click each card to read it again, then Award point" if all_rev else
-                           "Flip the cards one by one and read them out")
+            a.rect = pygame.Rect(667, 652, 200, 50) if all_rev else pygame.Rect(668, 652, 220, 50)
+            if not all_rev:
+                self.status = "Flip the cards one by one and read them out"
+            elif left > 2:
+                self.status = "Pick a card, then Eliminate it (or Award it the point)"
+            else:
+                self.status = "Final two! Pick the winner - or flip a coin"
         elif ph == "result" and v["can_next"]:
             a.label = "Final results" if v["final"] else "Next round"
             a.callback, a.enabled = self.next_round, True
@@ -676,7 +776,7 @@ class GameScene(Scene):
                 else:
                     self.status = ""
             elif ph == "judge":
-                self.status = f"{self.name(v['czar'], False)} is judging..."
+                self.status = "Coin flip!" if v.get("coin") else f"{self.name(v['czar'], False)} is judging..."
             elif ph == "result":
                 self.status = f"Waiting for {self.name(v['czar'], False)} to continue..."
             else:
@@ -698,6 +798,8 @@ class GameScene(Scene):
         if ph in ("intro", "play"):
             answers = [s.text for s in self.selected] or [c["t"] for c in v["mine"]]
             self.draw_sentence(surf, PANEL_TOP, answers, None)
+        elif ph in ("judge", "result") and self.coin_showing():
+            pass  # the coin takes over the bottom panel (drawn later, on top of the cards' shadows)
         elif ph in ("judge", "result"):
             # Everyone sees the same thing at the same time: whatever the Czar is reading out.
             g_i = v["winner"] if ph == "result" else v.get("reading")
@@ -724,9 +826,22 @@ class GameScene(Scene):
                 ui.draw_crown(surf, (BLACK_POS[0] - ui.text_width(czar_name, 17) / 2 - 14, BLACK_POS[1] + 182), 16)
                 ui.draw_text(surf, czar_name, 17, WHITE, (BLACK_POS[0], BLACK_POS[1] + 182))
 
-        for g in self.groups:
+        for gi, g in enumerate(self.groups):
             for s in g.sprites:
                 s.draw(surf)
+            if g.outa > 0.05:  # eliminated
+                x, y = g.center
+                r = V.rect((x - 46, y - 20, 92, 40))
+                surf.blit(ui.rounded_px(r.w, r.h, r.h // 2, (150, 30, 36), int(235 * g.outa)), r)
+                ui.draw_text(surf, "OUT", 22, WHITE, (x, y + 1), alpha=255 * g.outa)
+            if self.coin_anim and gi in self.coin_anim["pair"]:
+                heads_card = gi == self.coin_anim["pair"][0]
+                won = self.coin_state()[2] and gi == self.coin_anim["result"]
+                top = g.center[1] - (g.sprites[0].h / 2 if g.sprites else 80) - 20
+                r = V.rect((g.center[0] - 54, top - 15, 108, 30))
+                surf.blit(ui.rounded_px(r.w, r.h, r.h // 2, ACCENT if won else (40, 40, 46)), r)
+                ui.draw_text(surf, "HEADS" if heads_card else "TAILS", 15, INK if won else WHITE,
+                             (g.center[0], top))
             if g.label_a > 0.02 and g.pid is not None:
                 win = v["winner"] is not None and self.groups.index(g) == v["winner"]
                 ui.draw_text(surf, self.name(g.pid), 15, ACCENT if win else GRAY, (g.center[0], g.label_y),
@@ -739,6 +854,10 @@ class GameScene(Scene):
         if ph != "gameover" and not self.covered():
             self.action.draw(surf)
             self.reveal_all.draw(surf)
+            self.elim_btn.draw(surf)
+            self.coin_btn.draw(surf)
+        if self.coin_anim:
+            self.draw_coin(surf)
         if self.banner:
             self.draw_banner(surf)
         if self.cover > 0.01:
@@ -750,6 +869,69 @@ class GameScene(Scene):
         else:
             self.draw_particles(surf)
         self.draw_error(surf)
+
+    COIN_SPIN = 2.6
+
+    def coin_face(self, heads, px):
+        key = ("coin", heads, px)
+        img = self._coin_cache.get(key) if hasattr(self, "_coin_cache") else None
+        if img is None:
+            if not hasattr(self, "_coin_cache"):
+                self._coin_cache = {}
+            ss = 3
+            big = pygame.Surface((px * 2 * ss, px * 2 * ss), pygame.SRCALPHA)
+            c = px * ss
+            rim, face, ink = ((200, 150, 20), ACCENT, (110, 78, 0)) if heads else \
+                ((150, 150, 158), (214, 214, 220), (80, 80, 88))
+            pygame.draw.circle(big, rim, (c, c), c)
+            pygame.draw.circle(big, face, (c, c), int(c * 0.86))
+            pygame.draw.circle(big, rim, (c, c), int(c * 0.72), max(2, ss * 2))
+            img = pygame.transform.smoothscale(big, (px * 2, px * 2))
+            label = ui.text_surf_px("H" if heads else "T", int(px * 1.0), ink)
+            img.blit(label, label.get_rect(center=(px, px + px // 20)))
+            self._coin_cache[key] = img
+        return img
+
+    def coin_showing(self):
+        return bool(self.coin_anim) and self.coin_anim["t"] < self.COIN_SPIN + 1.8
+
+    def coin_state(self):
+        """(face showing is heads, width factor 0..1, landed) for the current spin."""
+        c = self.coin_anim
+        heads_wins = c["result"] == c["pair"][0]
+        k = ui.ease_out(min(1.0, c["t"] / self.COIN_SPIN))
+        turns = 16 if heads_wins else 17  # half-turns; even count lands on heads
+        angle = turns * math.pi * k
+        return int(angle / math.pi) % 2 == 0, abs(math.cos(angle)), k >= 1.0
+
+    def draw_coin(self, surf):
+        # The coin takes over the bottom panel, so both finalist cards stay visible above it.
+        c = self.coin_anim
+        heads, fx, landed = self.coin_state()
+        px, py, pw, ph = PANEL_BOTTOM
+        fade_out = max(0.0, min(1.0, (self.COIN_SPIN + 1.8 - c["t"]) / 0.4))  # gone soon after landing
+        if fade_out <= 0:
+            return
+        a = min(1.0, c["t"] / 0.25) * fade_out
+        ui.draw_panel(surf, PANEL_BOTTOM, alpha=235, shadow=True)
+        cx, cy = px + pw / 2 - 150, py + ph / 2
+        bounce = -abs(math.sin(min(1.0, c["t"] / self.COIN_SPIN) * math.pi)) * 26
+        face = self.coin_face(heads, V.s(58))
+        w = max(2, int(face.get_width() * max(0.06, fx)))
+        img = pygame.transform.smoothscale(face, (w, face.get_height()))
+        if a < 1:
+            img.set_alpha(int(255 * a))
+        surf.blit(img, img.get_rect(center=V.pt(cx, cy + bounce)))
+        tx = cx + 100
+        if landed:
+            word = "HEADS!" if heads else "TAILS!"
+            ui.draw_text(surf, word, 44, ACCENT if heads else WHITE, (tx, cy - 12), "midleft", alpha=255 * a)
+            ui.draw_text(surf, "That card wins the round.", 16, GRAY, (tx, cy + 28), "midleft", bold=False,
+                         alpha=255 * a)
+        else:
+            ui.draw_text(surf, "Coin flip...", 34, WHITE, (tx, cy - 12), "midleft", alpha=255 * a)
+            ui.draw_text(surf, "Heads or tails - the cards above are labelled.", 15, GRAY, (tx, cy + 26),
+                         "midleft", bold=False, alpha=255 * a)
 
     def draw_topbar(self, surf):
         self.menu_btn.draw(surf)
@@ -840,7 +1022,7 @@ class GameScene(Scene):
         ui.draw_panel(surf, (440, 200 + 20 * (1 - k), 400, self.pause_h + 20), fade=k)
         ui.draw_text(surf, "Paused" if not self.session.net else "Menu", 34, WHITE, (640, 252 + 20 * (1 - k)),
                      alpha=255 * k)
-        for b in (self.p_resume, self.p_packs, self.p_restart, self.p_leave):
+        for b in (self.p_resume, self.p_packs, self.p_voice, self.p_restart, self.p_leave):
             b.draw(surf)
         if self.session.net:
             ui.draw_text(surf, "The game keeps going while this is open.", 13, GRAY, (640, 200 + self.pause_h),

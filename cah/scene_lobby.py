@@ -6,7 +6,7 @@ from . import ui
 from .app import Scene
 from .net import GAME_PORT, local_ips
 from .scene_setup import BOT_NAMES
-from .ui import Button, Stepper, V, WHITE, GRAY, DIM, ACCENT, RED, PANEL_HI
+from .ui import Button, Segmented, Stepper, V, WHITE, GRAY, DIM, ACCENT, RED, PANEL_HI
 
 ROW_Y, ROW_H = 166, 46
 
@@ -31,6 +31,12 @@ class LobbyScene(Scene):
                             on_change=self.on_hand, sounds=app.sounds)
         from .scene_packs import PresetChips
         self.chips = PresetChips(app, 800, 318, 410, self.on_preset)
+        modes = ["off", "host", "all"]
+        self.voice = Segmented((1046, 114, 174, 34), ["Off", "Host", "All"],
+                               modes.index(st.get("tts_mode", "off")) if st.get("tts_mode") in modes else 0,
+                               self.on_voice, 13, app.sounds)
+        if self.host:
+            self.on_voice(self.voice.index, quiet=True)
         if self.host:  # the lobby starts with the host's saved packs; tag custom presets by name
             self.apply_packs(list(st["packs"]))
         self.fixed = self.buttons(self.leave_btn, self.start, self.add_bot, self.packs_btn)
@@ -53,6 +59,14 @@ class LobbyScene(Scene):
     def on_hand(self, v):
         self.app.settings["hand"] = v
         self.srv(lambda e: e.configure(hand=v))
+
+    def on_voice(self, i, quiet=False):
+        mode = ["off", "host", "all"][i]
+        self.app.settings["tts_mode"] = mode
+        self.srv(lambda e: e.configure(tts=mode))
+        if mode != "off" and not quiet:
+            from .tts import speaker
+            speaker().say("Robot voice on.")
 
     def apply_packs(self, packs):
         from .presets import match_name
@@ -90,7 +104,7 @@ class LobbyScene(Scene):
     def handle(self, ev):
         widgets = self.fixed + list(self.kick_btns.values())
         if self.host:
-            widgets += [self.points, self.hand, self.chips]
+            widgets += [self.points, self.hand, self.chips, self.voice]
         for w in widgets:
             if w.handle(ev):
                 return
@@ -135,6 +149,7 @@ class LobbyScene(Scene):
             self.points.update(dt)
             self.hand.update(dt)
             self.chips.update(dt, v["config"].get("preset"))
+            self.voice.update(dt)
         for b in self.fixed + list(self.kick_btns.values()):
             b.update(dt)
 
@@ -177,6 +192,13 @@ class LobbyScene(Scene):
         ui.draw_panel(surf, (770, 100, 470, 540))
         ui.draw_text(surf, "Rules", 22, WHITE, (800, 131), "midleft")
         cfg = v["config"]
+        ui.draw_text(surf, "Robot voice", 14, GRAY, (1036, 131), "midright", bold=False)
+        if self.host:
+            self.voice.draw(surf)
+        else:
+            label = {"off": "Off", "host": "Host PC", "all": "On"}.get(cfg.get("tts", "off"), "Off")
+            ui.draw_text(surf, label, 16, ACCENT if cfg.get("tts", "off") != "off" else WHITE, (1046, 131),
+                         "midleft")
         if self.host:
             self.points.draw(surf)
             self.hand.draw(surf)
